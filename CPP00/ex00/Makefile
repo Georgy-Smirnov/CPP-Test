@@ -7,10 +7,10 @@ NAME	=	megaphone
 all:		${NAME}
 
 ${NAME}:	${OBJ}
-			clang++ $< -o $@
+			clang++ -Wall -Werror -Wextra $< -o $@
 
 %.o:		%.cpp
-			clang++ -c $<
+			clang++ -Wall -Werror -Wextra -c $<
 
 clean:		
 			rm -f ${OBJ}

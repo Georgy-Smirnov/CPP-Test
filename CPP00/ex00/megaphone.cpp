@@ -1,7 +1,6 @@
 #include <iostream>
-using namespace std;
 
-char *change(char *str)
+char *to_upper(char *str)
 {
 	int i = 0;
 
@@ -20,14 +19,14 @@ int main(int argc, char **argv)
 	
 	if (argc == 1)
 	{
-		cout << "* LOUD AND UNBEARABLE FEEDBACK NOISE *" << endl;
+		std::cout << "* LOUD AND UNBEARABLE FEEDBACK NOISE *" << std::endl;
 		return (0);
 	}
 	while (i < argc)
 	{
-		cout << change(argv[i]);
+		std::cout << to_upper(argv[i]);
 		i++;
 	}
-	cout << endl;
+	std::cout << std::endl;
 	return (0);
 }
