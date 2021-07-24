@@ -1,5 +1,5 @@
-SRCS		=	phonebook.cpp \
-				method.cpp 
+SRCS		=	ClassContact.cpp \
+				main.cpp 
 
 OBJS		=	${SRCS:%.cpp=%.o}
 

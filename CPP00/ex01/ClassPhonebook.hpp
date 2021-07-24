@@ -1,10 +1,10 @@
-#ifndef __PHONEBOOK_HPP__
-# define __PHONEBOOK_HPP__
+#ifndef __CLASS_PHONEBOOK_HPP__
+# define __CLASS_PHONEBOOK_HPP__
 
 # include <iostream>
 # include <iomanip>
 
-class contact
+class Contact
 {
 public:
 	void	put_in_first_name(std::string str);
@@ -23,6 +23,12 @@ private:
 	std::string	_nick_name;
 	std::string	_phone_number;
 	std::string	_darkest_secret;
+};
+
+class Phonebook
+{
+public:
+	Contact contacs[8];
 };
 
 #endif

@@ -96,7 +96,10 @@ bool	Account::makeWithdrawal(int withdrawal)
 	now->tm_sec << "]";
 	std::cout << "index:" << _accountIndex << ";p_amount:" << _amount << ";";
 	if (_amount < withdrawal)
+	{
 		std::cout << "withdrawal:refused" << std::endl;
+		return (0);
+	}
 	else
 	{
 		_amount -= withdrawal;
@@ -106,8 +109,7 @@ bool	Account::makeWithdrawal(int withdrawal)
 		std::cout << "withdrawal:" << withdrawal << ";amount:";
 		std::cout << _amount << ";nb_withdrawals:" << _nbWithdrawals << std::endl;
 	}
-
-	return(0);
+	return(1);
 }
 
 int		Account::checkAmount(void) const
@@ -118,8 +120,7 @@ int		Account::checkAmount(void) const
 	std::setfill('0') << std::setw(2) <<  now->tm_mday << "_" << std::setfill('0') << std::setw(2) << \
 	now->tm_hour << std::setfill('0') << std::setw(2) << now->tm_min << std::setfill('0') << std::setw(2) << \
 	now->tm_sec << "]";
-	std::cout << "QWERTY";
-	return (1);
+	return (_amount);
 }
 
 void	Account::displayStatus(void) const

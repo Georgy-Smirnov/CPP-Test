@@ -1,27 +1,46 @@
-#include "phonebook.hpp"
+#include "ClassPhonebook.hpp"
 
-void	add_in_phonebook(contact *book, int &i)
+void	display_number(Phonebook &book, int i)
+{
+	std::cout << std::setw(17) << "First name:" << book.contacs[i - 1].take_first_name() << std::endl;
+	std::cout << std::setw(17) << "Last name:" << book.contacs[i - 1].take_last_name() << std::endl;
+	std::cout << std::setw(17) << "Nickname:" << book.contacs[i - 1].take_nick_name() << std::endl;
+	std::cout << std::setw(17) << "Phone number:" << book.contacs[i - 1].take_phone_number() << std::endl;
+	std::cout << std::setw(17) << "Darkest secret:" << book.contacs[i - 1].take_darkest_secret() << std::endl;
+}
+
+void	add_in_phonebook(Phonebook &book, int &i)
 {
 	std::string	str;
 	int	tmp = i % 8;
 
 	std::cout << "Enter first name:" << std::endl;
 	getline(std::cin, str);
-	book[tmp].put_in_first_name(str);
+	if (!std::cin)
+		exit (0);
+	book.contacs[tmp].put_in_first_name(str);
 	std::cout << "Enter last name:" << std::endl;
 	getline(std::cin, str);
-	book[tmp].put_in_last_name(str);
+	if (!std::cin)
+		exit (0);
+	book.contacs[tmp].put_in_last_name(str);
 	std::cout << "Enter nick name:" << std::endl;
 	getline(std::cin, str);
-	book[tmp].put_in_nick_name(str);
+	if (!std::cin)
+		exit (0);
+	book.contacs[tmp].put_in_nick_name(str);
 	std::cout << "Enter phone number:" << std::endl;
 	getline(std::cin, str);
-	book[tmp].put_in_phone_number(str);
+	if (!std::cin)
+		exit (0);
+	book.contacs[tmp].put_in_phone_number(str);
 	std::cout << "Enter darkset secret:" << std::endl;
 	getline(std::cin, str);
-	book[tmp].put_in_darkest_secret(str);
+	if (!std::cin)
+		exit (0);
+	book.contacs[tmp].put_in_darkest_secret(str);
 	i++;
-	std::cout << "Data record!" << std::endl;
+	std::cout << "OK" << std::endl;
 }
 
 std::string pop_str(std::string str)
@@ -35,16 +54,7 @@ std::string pop_str(std::string str)
 	return (str);
 }
 
-void	display_number(contact *book, int i)
-{
-	std::cout << std::setw(17) << "First name:" << book[i - 1].take_first_name() << std::endl;
-	std::cout << std::setw(17) << "Last name:" << book[i - 1].take_last_name() << std::endl;
-	std::cout << std::setw(17) << "Nickname:" << book[i - 1].take_nick_name() << std::endl;
-	std::cout << std::setw(17) << "Phone number:" << book[i - 1].take_phone_number() << std::endl;
-	std::cout << std::setw(17) << "Darkest secret:" << book[i - 1].take_darkest_secret() << std::endl;
-}
-
-void	display_phonebook(contact *book, int count)
+void	display_phonebook(Phonebook &book, int count)
 {
 	int i = 0;
 	std::string number;
@@ -53,26 +63,30 @@ void	display_phonebook(contact *book, int count)
 	{
 		std::cout << "=============================================" << std::endl;
 		std::cout << "|" << std::setw(10) << i + 1 << "|";
-		std::cout << std::setw(10) << pop_str(book[i].take_first_name()) << "|";
-		std::cout << std::setw(10) << pop_str(book[i].take_last_name()) << "|";
-		std::cout << std::setw(10) << pop_str(book[i].take_nick_name()) << "|" << std::endl;
+		std::cout << std::setw(10) << pop_str(book.contacs[i].take_first_name()) << "|";
+		std::cout << std::setw(10) << pop_str(book.contacs[i].take_last_name()) << "|";
+		std::cout << std::setw(10) << pop_str(book.contacs[i].take_nick_name()) << "|" << std::endl;
 		i++;
 	}
 	std::cout << "=============================================" << std::endl;
 	std::cout << "*********************************************" << std::endl;
 	std::cout << "Enter number: " << std::endl;
 	getline(std::cin, number);
+	if (!std::cin)
+		exit (0);
 	if (number[0] > '0' && number[0] < '9' && number[1] == '\0' && std::stoi(number) <= count)
 		display_number(book, std::stoi(number));
 	else
 		std::cout << "Wrong number!" << std::endl;
 }
 
-void	start_work_programm(contact *book, int &count)
+void	start_work_programm(Phonebook &book, int &count)
 {
 	std::string str;
 
 	getline(std::cin, str);
+	if (!std::cin)
+		exit (0);
 	if (str == "ADD")
 		add_in_phonebook(book, count);
 	else if (str == "SEARCH")
@@ -80,14 +94,13 @@ void	start_work_programm(contact *book, int &count)
 	else if (str == "EXIT")
 		exit (0);
 	else
-
 		std::cout << "Incorrect command!" << std::endl;
 }
 
 int	main(void)
 {
+	Phonebook	book;
 	int			count = 0;
-	contact	book[8];
 
 	std::cout << "Start programm:" << std::endl;
 	while (1)
