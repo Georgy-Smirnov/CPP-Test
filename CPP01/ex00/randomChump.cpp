@@ -2,9 +2,6 @@
 
 void	randomChump(std::string name)
 {
-	Zombie *heap;
-	
-	heap = newZombie(name);
-	heap->announce();
-	delete heap;
+	Zombie stack(name);
+	stack.announce();
 }

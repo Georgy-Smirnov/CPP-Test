@@ -11,7 +11,7 @@ public:
 	HumanA (std::string name, Weapon &weapone);
 private:
 	std::string _name;
-	Weapon		*_weapone;
+	Weapon		&_weapone;
 };
 
 #endif

@@ -7,9 +7,8 @@ void	HumanB::setWeapon(Weapon &club)
 
 HumanB::HumanB(std::string name)
 {
-	Weapon none("Nothing");
 	this->_name = name;
-	this->_weapone = &none;
+	this->_weapone = NULL;
 }
 
 void	HumanB::attack(void)

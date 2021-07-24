@@ -30,29 +30,30 @@ void	Karen::error(void)
 
 void	Karen::complain(std::string level)
 {
-	int flag = 0;
+	int i = 0;
 	std::string debug_str = "DEBUG";
 	std::string info_str = "INFO";
 	std::string warning_str = "WARNING";
 	std::string error_str = "ERROR";
-	void (Karen::*debug_ptr)() = NULL;
-	void (Karen::*info_ptr)() = NULL;
-	void (Karen::*warning_ptr)() = NULL;
-	void (Karen::*error_ptr)() = NULL;
-	debug_ptr = &Karen::debug;
-	info_ptr = &Karen::info;
-	warning_ptr = &Karen::warning;
-	error_ptr = &Karen::error;
 	std::string array_str[4] = {debug_str, info_str, warning_str, error_str};
-	void (Karen::*array[4])() = {debug_ptr, info_ptr, warning_ptr, error_ptr};
-	for (int i = 0; i < 4; i++)
+	while (i < 4)
 	{
-		if (array_str[i] == level || flag)
-		{
-			(*this.*array[i])();
-			flag = 1;
-		}
+		if (array_str[i] == level)
+			break ;
+		i++;
 	}
-	if (flag == 0)
+	switch (i)
+	{
+	case 0:
+		this->debug();
+	case 1:
+		this->info();
+	case 2:
+		this->warning();
+	case 3:
+		this->error();
+		break ;	
+	default:
 		std::cout << "[ Probably complaining about insignificant problems ]" << std::endl;
+	}
 }
