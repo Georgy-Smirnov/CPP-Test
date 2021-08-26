@@ -17,10 +17,10 @@ public:
 	float	toFloat(void) const;
 	int		toInt(void) const;
 	Fixed &operator =(const Fixed &tmp);
-	friend std::ostream& operator<< (std::ostream &out, const Fixed &fixed);
 private:
 	int					_value;
 	static const int	_fractional = 8;
 };
+	std::ostream& operator<< (std::ostream &out, const Fixed &fixed);
 
 #endif

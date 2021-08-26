@@ -41,7 +41,7 @@ Fixed::Fixed(const float tmp)
 
 float	Fixed::toFloat(void) const
 {
-	return (static_cast<float>(_value) / 256);
+	return ((static_cast<float>(_value)) / 256);
 }
 
 int	Fixed::toInt(void) const
