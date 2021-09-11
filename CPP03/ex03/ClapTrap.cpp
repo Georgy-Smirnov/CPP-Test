@@ -45,3 +45,18 @@ void ClapTrap::beRepaired(unsigned int ammount)
 {
 	std::cout << "ClapTrap " << Name << " be repaired " << ammount << std::endl;
 }
+
+int ClapTrap::getHitpoints()
+{
+	return (Hitpoints);
+}
+
+int ClapTrap::getEnergyPoints()
+{
+	return (EnergyPoints);
+}
+
+int ClapTrap::getAttackDamage()
+{
+	return (AttackDamage);
+}

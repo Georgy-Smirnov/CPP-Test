@@ -2,6 +2,10 @@
 
 DiamondTrap::DiamondTrap() : FragTrap(), ScavTrap(), Name("Default")
 {
+	FragTrap tmp;
+	Hitpoints = tmp.getHitpoints();
+	AttackDamage = tmp.getAttackDamage();
+	ClapTrap::Name = Name + "_clap_name";
 	std::cout << "Default DiamondTrap created" << std::endl;
 }
 
@@ -12,6 +16,9 @@ DiamondTrap::~DiamondTrap()
 
 DiamondTrap::DiamondTrap(const std::string name) : FragTrap(), ScavTrap(), Name(name)
 {
+	FragTrap tmp;
+	Hitpoints = tmp.getHitpoints();
+	AttackDamage = tmp.getAttackDamage();
 	ClapTrap::Name = name + "_clap_name";
 	std::cout << Name << " DiamondTrap created" << std::endl;
 }
@@ -35,4 +42,14 @@ DiamondTrap& DiamondTrap::operator=(const DiamondTrap& tmp)
 	AttackDamage = tmp.AttackDamage;
 	ClapTrap::Name = tmp.ClapTrap::Name;
 	return (*this);
+}
+
+void DiamondTrap::attack(std::string const &target)
+{
+	this->ScavTrap::attack(target);
+}
+
+void DiamondTrap::WhoAmI()
+{
+	std::cout << "I am is " << Name << "\nI am is " << ClapTrap::Name << std::endl;
 }

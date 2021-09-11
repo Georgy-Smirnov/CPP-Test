@@ -6,6 +6,7 @@ int main(void)
 {
 	DiamondTrap trap("Bob");
 	trap.highFivesGuys();
-	// trap.attack("Jhon");
+	trap.attack("Jhon");
 	trap.guardGate();
+	trap.WhoAmI();
 }
