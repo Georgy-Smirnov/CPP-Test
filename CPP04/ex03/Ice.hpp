@@ -11,6 +11,7 @@ public:
 	Ice(const Ice& tmp);
 	Ice& operator=(const Ice& tmp);
 	Ice* clone() const;
+	void use(ICharacter& target);
 };
 
 #endif

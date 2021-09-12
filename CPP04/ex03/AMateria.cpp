@@ -13,10 +13,16 @@ AMateria& AMateria::operator=(const AMateria& tmp)
 	if (this == &tmp)
 		return (*this);
 	type = tmp.type;
+	std::cout << "lol\n";
 	return (*this);
 }
 
 const std::string& AMateria::getType() const
 {
 	return(type);
+}
+
+void AMateria::use(ICharacter& target)
+{
+	target.getName();
 }
