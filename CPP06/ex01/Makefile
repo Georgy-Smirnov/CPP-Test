@@ -1,15 +1,12 @@
-SRCS	=	main.cpp \
-			Conversion.cpp
+SRCS	=	main.cpp
 
 OBJS	=	$(SRCS:%.cpp=%.o)
 
-HEAD	=	*.hpp
-
-NAME	=	ex00
+NAME	=	ex01
 
 all:		${NAME}
 
-${NAME}:	${OBJS} ${HEAD}
+${NAME}:	${OBJS}
 			clang++ --std=c++98 -Wall -Werror -Wextra ${OBJS} -o $@
 
 %.o:		%.cpp

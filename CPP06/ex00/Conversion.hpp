@@ -3,6 +3,8 @@
 
 #include <iostream>
 #include <cstdlib>
+#include <iomanip>
+#include <sstream>
 
 class Conversion
 {
@@ -15,11 +17,18 @@ public:
 	int getInt() const;
 	float getFloat() const;
 	double getDouble() const;
-private:
-	Conversion();
-	double rez;
-};
+	void printRezult() const;
 
-std::ostream& operator<<(std::ostream& out, const Conversion& a);
+	class NoConvertString : public std::exception
+	{
+	public:
+		const char* what() const throw();
+	};
+private:
+	std::string string;
+	bool infValue;
+	Conversion();
+	void printrInfValue(char c) const;
+};
 
 #endif

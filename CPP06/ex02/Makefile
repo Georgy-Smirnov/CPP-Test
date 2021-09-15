@@ -1,11 +1,10 @@
-SRCS	=	main.cpp \
-			Conversion.cpp
+SRCS	=	main.cpp
 
 OBJS	=	$(SRCS:%.cpp=%.o)
 
 HEAD	=	*.hpp
 
-NAME	=	ex00
+NAME	=	ex02
 
 all:		${NAME}
 
