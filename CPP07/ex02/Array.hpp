@@ -12,7 +12,7 @@ public:
 	Array(unsigned int sizeArray) : sizeArray(sizeArray), array(new T[sizeArray]) {}
 	Array(const Array& tmp) : sizeArray(tmp.sizeArray), array(new T[sizeArray])
 	{
-		for (int i = 0; i < tmp.sizeArray; i++)
+		for (unsigned int i = 0; i < tmp.sizeArray; i++)
 			array[i] = tmp.array[i];
 	}
 	Array& operator=(const Array& tmp)
