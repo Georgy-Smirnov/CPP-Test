@@ -52,19 +52,25 @@ public:
 			}
 		}
 	}
-	// ENABLE_IF ????????????????????
+
 	template< class InputIt >
-	vector(InputIt first, InputIt last, const Allocator& alloc = Allocator()) {
-		std::cout << "%(\n";
-		// vector<typename iterator_traits<InputIt>::value_type> tmp;
-		// while (first != last) {
-		// 	tmp.push_back(*first);
-		// 	++first;
-		// }
-		// _array = tmp._array;
-		// _size = tmp._size;
-		// _capacity = tmp._capacity;
-		// _allocator = tmp._allocator;
+	vector(InputIt first, typename enable_if<!is_integral<InputIt>::value, InputIt>::type last, const Allocator& alloc = Allocator())
+		: _array(nullptr), _size(0), _capacity(0), _allocator(alloc) {
+		if (last < first) return;
+		_size = last - first;
+		_capacity = _size;
+		_array = _allocator.allocate(_capacity);
+		for (size_t i = 0; i < _size; ++i) {
+			try {
+				_allocator.construct(_array + i, *(first + i));
+			}
+			catch (std::exception &ex) {
+				for (size_t j = 0; j < i; ++j)
+					_allocator.destroy(_array + j);
+				_allocator.deallocate(_array, _capacity);
+				throw;
+			}
+		}
 	}
 
 	vector(const vector& other) : _size(other._size), _capacity(other._capacity), _allocator(other._allocator) {
@@ -114,9 +120,10 @@ public:
 		return *this;
 	}
 
-	void assign( size_type count, const value_type& value ) {
+	void assign(size_type count, const value_type& value) {
 		reserve(count);
-		for (size_t i = 0; i < count; ++i) {
+		size_t i = 0;
+		while (i < count) {
 			_allocator.destroy(_array + i);
 			try {
 				_allocator.construct(_array + i, value);
@@ -126,11 +133,37 @@ public:
 					_allocator.destroy(_array + j);
 				throw;
 			}
+			++i;
 		}
+		while (i < _size) {
+			--_size;
+			_allocator.destroy(_array + _size);
+		}
+		
 	}
 	
-	// template< class InputIt >
-	// void assign( InputIt first, InputIt last );
+	template< class InputIt >
+	void assign(InputIt first, InputIt last) {
+		int tmp = last - first;
+		reserve(tmp);
+		size_t i = 0;
+		while (i < tmp) {
+			_allocator.destroy(_array + i);
+			try {
+				_allocator.construct(_array + i, *(first + i));
+			}
+			catch (std::exception &ex) {
+				for (size_t j = 0; j < i; ++j)
+					_allocator.destroy(_array + j);
+				throw;
+			}
+			++i;
+		}
+		while (i < _size) {
+			--_size;
+			_allocator.destroy(_array + _size);
+		}
+	}
 
 	allocator_type get_allocator() const { return _allocator; }
 
@@ -138,12 +171,12 @@ public:
 	/************** Element access ***************/
 	/*********************************************/
 
-	reference at( size_type pos ) {
+	reference at(size_type pos) {
 		if (pos >= _size || pos < 0)
 			throw (std::out_of_range("Index_vector at out of range"));	
 		return *(_array + pos);
 	}
-	const_reference at( size_type pos ) const { 
+	const_reference at(size_type pos) const { 
 		if (pos >= _size || pos < 0)
 			throw (std::out_of_range("Index_vector at out of range"));	
 		return *(_array + pos);
@@ -214,7 +247,24 @@ public:
 		_size = 0;
 	}
 
-	// iterator insert( iterator pos, const T& value );
+	iterator insert(iterator pos, const T& value) {
+		if (pos < this->begin() || pos > this->end()) throw(std::out_of_range("Index_vector at out of range"));
+		if (_capacity > _size + 1) {
+			size_t j = 0;
+			pointer tmp = _allocator.allocate(_capacity);
+			for (iterator i = this->begin(); i < pos; ++i) {
+				try {
+					_allocator.consrtuct(&(*i), *(_array + j));
+				}
+				catch (std::exception &ex) {
+					for (size_t q = 0; q < j; ++q)
+						_allocator.destroy(tmp + j)
+				}
+
+			}
+		}
+	}
+
 	// void insert( iterator pos, size_type count, const T& value );
 	// template< class InputIt >
 	// void insert( iterator pos, InputIt first, InputIt last );
