@@ -1,120 +1,3 @@
-#include <iostream>
-#include <string>
-#include <deque>
-// #if 1 //CREATE A REAL STL EXAMPLE
-// 	#include <map>
-// 	#include <stack>
-// 	#include <vector>
-// 	namespace ft = std;
-// #else
-// 	#include <map.hpp>
-// 	#include <stack.hpp>
-// 	#include <vector.hpp>
-// #endif
-
-// #include <stdlib.h>
-
-// #define MAX_RAM 4294967296
-// #define BUFFER_SIZE 4096
-// struct Buffer
-// {
-// 	int idx;
-// 	char buff[BUFFER_SIZE];
-// };
-
-
-// #define COUNT (MAX_RAM / (int)sizeof(Buffer))
-
-// template<typename T>
-// class MutantStack : public ft::stack<T>
-// {
-// public:
-// 	MutantStack() {}
-// 	MutantStack(const MutantStack<T>& src) { *this = src; }
-// 	MutantStack<T>& operator=(const MutantStack<T>& rhs) 
-// 	{
-// 		this->c = rhs.c;
-// 		return *this;
-// 	}
-// 	~MutantStack() {}
-
-// 	typedef typename ft::stack<T>::container_type::iterator iterator;
-
-// 	iterator begin() { return this->c.begin(); }
-// 	iterator end() { return this->c.end(); }
-// };
-
-// int main(int argc, char** argv) {
-// 	if (argc != 2)
-// 	{
-// 		std::cerr << "Usage: ./test seed" << std::endl;
-// 		std::cerr << "Provide a seed please" << std::endl;
-// 		std::cerr << "Count value:" << COUNT << std::endl;
-// 		return 1;
-// 	}
-// 	const int seed = atoi(argv[1]);
-// 	srand(seed);
-
-// 	ft::vector<std::string> vector_str;
-// 	ft::vector<int> vector_int;
-// 	ft::stack<int> stack_int;
-// 	ft::vector<Buffer> vector_buffer;
-// 	ft::stack<Buffer, std::deque<Buffer> > stack_deq_buffer;
-// 	ft::map<int, int> map_int;
-
-// 	for (int i = 0; i < COUNT; i++)
-// 	{
-// 		vector_buffer.push_back(Buffer());
-// 	}
-
-// 	for (int i = 0; i < COUNT; i++)
-// 	{
-// 		const int idx = rand() % COUNT;
-// 		vector_buffer[idx].idx = 5;
-// 	}
-// 	ft::vector<Buffer>().swap(vector_buffer);
-
-// 	try
-// 	{
-// 		for (int i = 0; i < COUNT; i++)
-// 		{
-// 			const int idx = rand() % COUNT;
-// 			vector_buffer.at(idx);
-// 			std::cerr << "Error: THIS VECTOR SHOULD BE EMPTY!!" <<std::endl;
-// 		}
-// 	}
-// 	catch(const std::exception& e)
-// 	{
-// 		//NORMAL ! :P
-// 	}
-	
-// 	for (int i = 0; i < COUNT; ++i)
-// 	{
-// 		map_int.insert(ft::make_pair(rand(), rand()));
-// 	}
-
-// 	int sum = 0;
-// 	for (int i = 0; i < 10000; i++)
-// 	{
-// 		int access = rand();
-// 		sum += map_int[access];
-// 	}
-// 	std::cout << "should be constant with the same seed: " << sum << std::endl;
-
-// 	{
-// 		ft::map<int, int> copy = map_int;
-// 	}
-// 	MutantStack<char> iterable_stack;
-// 	for (char letter = 'a'; letter <= 'z'; letter++)
-// 		iterable_stack.push(letter);
-// 	for (MutantStack<char>::iterator it = iterable_stack.begin(); it != iterable_stack.end(); it++)
-// 	{
-// 		std::cout << *it;
-// 	}
-// 	std::cout << std::endl;
-// 	return (0);
-// }
-
 #include "stack.hpp"
 #include <iterator>
 #include <vector>
@@ -203,13 +86,70 @@ int main()
 	printv(ftvec.begin(), ftvec.end());
 	std::cout << "cap: " << ftvec.capacity() << "; size: " << ftvec.size() << std::endl;
 	std::cout << "============================\n";
-	std::vector<int> vec1(1, 123);
+	{
+	std::vector<int> vec1(3, 123);
 	printv(vec1.begin(), vec1.end());
 	std::cout << "cap: " << vec1.capacity() << "; size: " << vec1.size() << std::endl;
 	vec1.insert(vec1.begin(), 11);
 	printv(vec1.begin(), vec1.end());
 	std::cout << "cap: " << vec1.capacity() << "; size: " << vec1.size() << std::endl;
-	vec1.insert(vec1.begin(), 11);
+	vec1.insert(vec1.begin() + 1, 111);
 	printv(vec1.begin(), vec1.end());
 	std::cout << "cap: " << vec1.capacity() << "; size: " << vec1.size() << std::endl;
+	std::cout << "--------------\n";
+	ft::vector<int> ftvec1(3, 123);
+	printv(ftvec1.begin(), ftvec1.end());
+	std::cout << "cap: " << ftvec1.capacity() << "; size: " << ftvec1.size() << std::endl;
+	ftvec1.insert(ftvec1.begin(), 11);
+	printv(ftvec1.begin(), ftvec1.end());
+	std::cout << "cap: " << ftvec1.capacity() << "; size: " << ftvec1.size() << std::endl;
+	ftvec1.insert(ftvec1.begin() + 1, 111);
+	printv(ftvec1.begin(), ftvec1.end());
+	std::cout << "cap: " << ftvec1.capacity() << "; size: " << ftvec1.size() << std::endl;
+	}
+	std::cout << "============================\n";
+	{
+	std::vector<int> vec1(10, 123);
+	printv(vec1.begin(), vec1.end());
+	std::cout << "cap: " << vec1.capacity() << "; size: " << vec1.size() << std::endl;
+	vec1.insert(vec1.begin() + 1, 5, 99);
+	printv(vec1.begin(), vec1.end());
+	std::cout << "cap: " << vec1.capacity() << "; size: " << vec1.size() << std::endl;
+	std::vector<int> tmp;
+	tmp.push_back(1);
+	tmp.push_back(2);
+	tmp.push_back(3);
+	vec1.insert(vec1.begin() + 5, tmp.begin(), tmp.end());
+	printv(vec1.begin(), vec1.end());
+	std::cout << "cap: " << vec1.capacity() << "; size: " << vec1.size() << std::endl;
+	std::cout << "--------------\n";
+	ft::vector<int> ftvec1(10, 123);
+	printv(ftvec1.begin(), ftvec1.end());
+	std::cout << "cap: " << ftvec1.capacity() << "; size: " << ftvec1.size() << std::endl;
+	ftvec1.insert(ftvec1.begin() + 1, 5, 99);
+	printv(ftvec1.begin(), ftvec1.end());
+	std::cout << "cap: " << ftvec1.capacity() << "; size: " << ftvec1.size() << std::endl;
+	ft::vector<int> tmp1;
+	tmp1.push_back(1);
+	tmp1.push_back(2);
+	tmp1.push_back(3);
+	ftvec1.insert(ftvec1.begin() + 5, tmp1.begin(), tmp1.end());
+	printv(ftvec1.begin(), ftvec1.end());
+	std::cout << "cap: " << ftvec1.capacity() << "; size: " << ftvec1.size() << std::endl;
+	std::cout << "============================\n";
+	std::cout << "rez: " << *(vec1.erase(vec1.begin() + 5)) << std::endl;
+	printv(vec1.begin(), vec1.end());
+	std::cout << "cap: " << vec1.capacity() << "; size: " << vec1.size() << std::endl;
+	std::cout << "rez: " << *(vec1.erase(vec1.begin() + 3, vec1.end() - 2)) << std::endl;
+	printv(vec1.begin(), vec1.end());
+	std::cout << "cap: " << vec1.capacity() << "; size: " << vec1.size() << std::endl;
+	std::cout << "--------------\n";
+	std::cout << "rez: " << *(ftvec1.erase(ftvec1.begin() + 5)) << std::endl;
+	printv(ftvec1.begin(), ftvec1.end());
+	std::cout << "cap: " << ftvec1.capacity() << "; size: " << ftvec1.size() << std::endl;
+	std::cout << "rez: " << *(ftvec1.erase(ftvec1.begin() + 3, ftvec1.end() - 2)) << std::endl;
+	printv(ftvec1.begin(), ftvec1.end());
+	std::cout << "cap: " << ftvec1.capacity() << "; size: " << ftvec1.size() << std::endl;
+
+	}
 }

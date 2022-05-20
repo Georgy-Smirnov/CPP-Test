@@ -22,8 +22,8 @@ public:
 	typedef typename Allocator::const_pointer	const_pointer;
 	typedef IteratorVector<value_type>			iterator;
 	typedef IteratorVector<const value_type>		const_iterator;
-	// typedef ReverseIterator<iterator>		reverse_iterator;
-	// typedef ReverseIterator<const_iterator>	reverse_const_iterator;
+	typedef ReverseIteratorVector<iterator>		reverse_iterator;
+	typedef ReverseIteratorVector<const_iterator>	reverse_const_iterator;
 
 private:
 	pointer		_array;
@@ -96,7 +96,7 @@ public:
 	}
 
 	vector& operator=(const vector& other) {
-		// if (other == *this) return *this;
+		if (other == *this) return *this;
 		pointer tmp = _allocator.allocate(other._capacity);
 		for (size_t i = 0; i < other._size; ++i) {
 			try {
@@ -249,27 +249,239 @@ public:
 
 	iterator insert(iterator pos, const T& value) {
 		if (pos < this->begin() || pos > this->end()) throw(std::out_of_range("Index_vector at out of range"));
-		if (_capacity > _size + 1) {
-			size_t j = 0;
-			pointer tmp = _allocator.allocate(_capacity);
-			for (iterator i = this->begin(); i < pos; ++i) {
+		if (_capacity == 0) {
+			this->push_back(value);
+			return iterator(_array);
+		}
+		if (_capacity >= _size + 1) {
+			iterator tmp = this->end();
+			while (tmp != pos) {
 				try {
-					_allocator.consrtuct(&(*i), *(_array + j));
+					_allocator.construct(&(*tmp), *(tmp - 1));
+					_allocator.destroy(&(*(tmp - 1)));
 				}
 				catch (std::exception &ex) {
-					for (size_t q = 0; q < j; ++q)
-						_allocator.destroy(tmp + j)
+					for (iterator j = pos; j != tmp; ++j) {
+						_allocator.destroy(&(*j));
+					}
+					throw;
 				}
-
+				--tmp;
 			}
+			_allocator.construct(&(*pos), value);
+			++_size;
+			return pos;
+		}
+		else {
+			int count = pos - this->begin();
+			pointer tmp = _allocator.allocate(_capacity * 2);
+			for (size_t i = 0; i < count; ++i) {
+				try {
+					_allocator.construct(tmp + i, *(_array + i));
+				}
+				catch (std::exception &ex) {
+					for (size_t j = 0; j < i; ++j)
+						_allocator.destroy(tmp + j);
+					_allocator.deallocate(tmp, _capacity * 2);
+					throw;
+					}
+			}
+			count = this->size() - (this->end() - pos);
+			for (size_t i = this->size(); i > count; --i) {
+				try {
+					_allocator.construct(tmp + i, *(_array + i - 1));
+					_allocator.destroy(tmp + i - 1);
+				}
+				catch (std::exception &ex) {
+					for (size_t j = this->size(); j > i; --j)
+						_allocator.destroy(tmp + j);
+					_allocator.deallocate(tmp, _capacity * 2);
+					throw;
+				}
+			}
+			try {
+				_allocator.construct(tmp + count, value);
+			}
+			catch (std::exception &ex) {
+				for (size_t i = this->size(); i > count; --i)
+					_allocator.destroy(tmp + i);
+				count = pos - this->begin();
+				for (size_t i = 0; i < count; ++i)
+					_allocator.destroy(tmp + i);
+				_allocator.deallocate(tmp, _capacity * 2);
+				throw;
+			}
+			for (size_t i = 0; i < this->size(); ++i)
+				_allocator.destroy(_array + i);
+			_allocator.deallocate(_array, _capacity);
+			_capacity = _capacity * 2;
+			++_size;
+			_array = tmp;
+			return _array + count;
 		}
 	}
 
-	// void insert( iterator pos, size_type count, const T& value );
-	// template< class InputIt >
-	// void insert( iterator pos, InputIt first, InputIt last );
-	// iterator erase( iterator pos );
-	// iterator erase( iterator first, iterator last );
+	void insert(iterator pos, size_type count, const T& value) {
+		if (pos < this->begin() || pos > this->end()) throw(std::out_of_range("Index_vector at out of range"));
+		int i = 0;
+		pointer tmp = nullptr;
+		size_type tmp_count = count;
+		size_type new_capacity;
+		if (_size + count <= _capacity)
+			new_capacity = _capacity;
+		else if (_size + count <= _capacity * 2)
+			new_capacity = _capacity * 2;
+		else
+			new_capacity = _size + count;
+		tmp = _allocator.allocate(new_capacity);
+		int index = pos - this->begin();
+		while (i < index) {
+			try {
+				_allocator.construct(tmp + i, *(_array + i));
+			}
+			catch (std::exception &ex) {
+				for (size_t j = 0; j < i; ++j)
+					_allocator.destroy(tmp + j);
+				_allocator.deallocate(tmp, new_capacity);
+				throw;
+			}
+			++i;
+		}
+		while (tmp_count != 0) {
+			try {
+				_allocator.construct(tmp + index, value);
+			}
+			catch (std::exception &ex) {
+				for (size_t j = 0; j < index; ++j)
+					_allocator.destroy(tmp + j);
+				_allocator.deallocate(tmp, new_capacity);
+				throw;
+			}
+			++index;
+			--tmp_count;
+		}
+		while (i < this->size()) {
+			try {
+				_allocator.construct(tmp + index, *(_array + i));
+			}
+			catch (std::exception &ex) {
+				for (size_t j = 0; j < index; ++j)
+					_allocator.destroy(tmp + j);
+				_allocator.deallocate(tmp, new_capacity);
+				throw;
+			}
+			++index;
+			++i;
+		}
+		for (size_t i = 0; i < this->size(); ++i)
+			_allocator.destroy(_array + i);
+		_allocator.deallocate(_array, _capacity);
+		_capacity = new_capacity;
+		_size = _size + count;
+		_array = tmp;
+	}
+
+	template< class InputIt >
+	typename enable_if<!is_integral<InputIt>::value, void>::type
+		insert(iterator pos, InputIt first, InputIt last) {
+		if (pos < this->begin() || pos > this->end()) throw(std::out_of_range("Index_vector at out of range"));
+		int i = 0;
+		pointer tmp = nullptr;
+		size_type count = last - first;
+		size_type tmp_count = count;
+		size_type new_capacity;
+		if (_size + count <= _capacity)
+			new_capacity = _capacity;
+		else if (_size + count <= _capacity * 2)
+			new_capacity = _capacity * 2;
+		else
+			new_capacity = _size + count;
+		tmp = _allocator.allocate(new_capacity);
+		int index = pos - this->begin();
+		while (i < index) {
+			try {
+				_allocator.construct(tmp + i, *(_array + i));
+			}
+			catch (std::exception &ex) {
+				for (size_t j = 0; j < i; ++j)
+					_allocator.destroy(tmp + j);
+				_allocator.deallocate(tmp, new_capacity);
+				throw;
+			}
+			++i;
+		}
+		while (tmp_count != 0) {
+			try {
+				_allocator.construct(tmp + index, *(last - tmp_count));
+			}
+			catch (std::exception &ex) {
+				for (size_t j = 0; j < index; ++j)
+					_allocator.destroy(tmp + j);
+				_allocator.deallocate(tmp, new_capacity);
+				throw;
+			}
+			++index;
+			--tmp_count;
+		}
+		while (i < this->size()) {
+			try {
+				_allocator.construct(tmp + index, *(_array + i));
+			}
+			catch (std::exception &ex) {
+				for (size_t j = 0; j < index; ++j)
+					_allocator.destroy(tmp + j);
+				_allocator.deallocate(tmp, new_capacity);
+				throw;
+			}
+			++index;
+			++i;
+		}
+		for (size_t i = 0; i < this->size(); ++i)
+			_allocator.destroy(_array + i);
+		_allocator.deallocate(_array, _capacity);
+		_capacity = new_capacity;
+		_size = _size + count;
+		_array = tmp;
+	}
+
+	iterator erase(iterator pos) {
+		if (pos < this->begin() || pos > this->end()) throw(std::out_of_range("Index_vector at out of range"));
+		for (size_t i = pos - this->begin(); i < this->size(); ++i) {
+			try {
+				_allocator.destroy(_array + i);
+				if (i != this->size() - 1)
+					_allocator.construct(_array + i, *(_array + i + 1));
+			}
+			catch(std::exception& ex) {
+				for (size_t j = pos - this->begin(); j < i; ++j)
+					_allocator.destroy(_array + j);
+				throw;
+			}			
+		}
+		--_size;
+		return &(*pos);
+	}
+
+	iterator erase( iterator first, iterator last ) {
+		if (first < this->begin() || first > this->end() || last < this->begin() || last > this->end() || last < first)
+			throw(std::out_of_range("Index_vector at out of range"));
+		size_type count = last - first;
+		for (size_t i = first - this->begin(); i < last - this->begin(); ++i) {
+			_allocator.destroy(_array + i);
+		}
+		for (size_t i = last - this->begin(); i < this->size(); ++ i) {
+			try {
+				_allocator.construct(_array + i - count, *(_array + i));
+			}
+			catch (std::exception& ex) {
+				for (size_t j = last - this->begin(); j < i; ++j)
+					_allocator.destroy(_array + j);
+				throw;
+			}
+		}
+		_size -= count;
+		return first;
+	}
 
 	void push_back(const value_type& value) {
 		if (_size == _capacity) {
@@ -314,18 +526,19 @@ public:
 		std::swap(_allocator, other._allocator);
 	}
 
-// template< class T, class Alloc >
-// bool operator==(const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs);
-// template< class T, class Alloc >
-// bool operator!=(const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs);
-// template< class T, class Alloc >
-// bool operator<(const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs);
-// template< class T, class Alloc >
-// bool operator<=(const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs);
-// template< class T, class Alloc >
-// bool operator>(const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs);
-// template< class T, class Alloc >
-// bool operator>=(const std::vector<T,Alloc>& lhs, const std::vector<T,Alloc>& rhs);
+	friend bool operator==(const vector& lhs, const vector& rhs) {
+	if (lhs.size() != rhs.size())
+		return false;
+	return equal(lhs.begin(), lhs.end(), rhs.begin());
+	}
+	friend bool operator!=(const vector& lhs, const vector& rhs) { return !(lhs == rhs); }
+	friend bool operator<(const vector& lhs, const vector& rhs) {
+		return lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+	}
+	friend bool operator>(const vector& lhs, const vector& rhs) { return rhs < lhs; }
+	friend bool operator<=(const vector& lhs, const vector& rhs) { return !(rhs < lhs); }
+	friend bool operator>=(const vector& lhs, const vector& rhs) { return !(lhs < rhs); }
+
 };
 
 
