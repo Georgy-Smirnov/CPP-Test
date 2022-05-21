@@ -526,6 +526,10 @@ public:
 		std::swap(_allocator, other._allocator);
 	}
 
+	/*********************************************/
+	/*********** Non-Member functions ************/
+	/*********************************************/
+	
 	friend bool operator==(const vector& lhs, const vector& rhs) {
 	if (lhs.size() != rhs.size())
 		return false;

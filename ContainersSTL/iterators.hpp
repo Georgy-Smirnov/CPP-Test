@@ -60,6 +60,24 @@ public:
 };
 
 /*********************************************/
+/************* Iterator for map **************/
+/*********************************************/
+
+template <typename U>
+class IteratorMap : iterator<std::bidirectional_iterator_tag, U> {
+public:
+	typedef U																			iterator_type;
+	typedef typename iterator<std::bidirectional_iterator_tag, U>::value_type			value_type;
+	typedef typename iterator<std::bidirectional_iterator_tag, U>::difference_type		difference_type;
+	typedef typename iterator<std::bidirectional_iterator_tag, U>::pointer				pointer;
+	typedef typename iterator<std::bidirectional_iterator_tag, U>::reference			reference;
+	typedef typename iterator<std::bidirectional_iterator_tag, U>::iterator_category	iterator_category;
+private:
+	pointer _pointer;
+public:
+};
+
+/*********************************************/
 /************* Reverse Iterator **************/
 /*********************************************/
 

@@ -34,20 +34,20 @@ struct iterator_traits {
 
 template <typename T>
 struct iterator_traits<T*> {
-	typedef typename Iterator::value_type			value_type;
-	typedef typename Iterator::pointer			pointer;
-	typedef typename Iterator::reference			reference;
-	typedef typename Iterator::difference_type		difference_type;
-	typedef typename std::random_access_iterator_tag		iterator_category;
+	typedef T									value_type;
+	typedef T*									pointer;
+	typedef T&									reference;
+	typedef std::ptrdiff_t						difference_type;
+	typedef std::random_access_iterator_tag		iterator_category;
 };
 
 template <typename T>
 struct iterator_traits<const T*> {
-	typedef typename Iterator::value_type			value_type;
-	typedef typename Iterator::pointer			pointer;
-	typedef typename Iterator::reference			reference;
-	typedef typename Iterator::difference_type		difference_type;
-	typedef typename std::random_access_iterator_tag		iterator_category;
+	typedef T									value_type;
+	typedef T*									pointer;
+	typedef T&									reference;
+	typedef std::ptrdiff_t						difference_type;
+	typedef std::random_access_iterator_tag		iterator_category;
 };
 
 
@@ -188,6 +188,29 @@ template <typename T1, typename T2>
 bool operator<=(const ft::pair<T1, T2>& x, const ft::pair<T1, T2>& y) {
 	return !(y < x);
 }
+
+/*********************************************/
+/********* node for red black tree ***********/
+/*********************************************/
+
+template <typename T, typename Allocator>
+class redBlackTreeNode {
+public:
+	typedef T																value_type;
+	typedef redBlackTreeNode*												node_pointer;
+	typedef Allocator														allocator_type;
+	typedef typename Allocator::template rebind<redBlackTreeNode>::other	allocator_node;
+private:
+	value_type		_value;
+	node_pointer 	_left;
+	node_pointer 	_right;
+	node_pointer 	_parent;
+	bool			_red;
+	allocator_node	_allocator;
+public:
+	explicit redBlackTreeNode(const value_type &val = value_type()) : _value(val), _left(nullptr), _right(nullptr), _parent(nullptr), _red(false) {}
+	const value_type& val() const { return _value; }//TEST
+};
 
 } // namespace ft
 

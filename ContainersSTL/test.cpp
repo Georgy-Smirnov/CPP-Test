@@ -2,12 +2,12 @@
 #include <vector>
 #include <map>
 #include <iterator>
-
-namespace test {
+#include "map.hpp"
 
 int main(void)
 {
-	std::allocator<int> alloc;
-}
-
+	typedef ft::pair<int, std::string> pair;
+	pair q(5, "hello");
+	ft::redBlackTreeNode<pair, std::allocator<pair> > n(q);
+	std::cout << n.val().first << " " << n.val().second << std::endl;
 }
