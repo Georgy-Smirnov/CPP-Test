@@ -12,7 +12,6 @@ namespace ft{
 template <typename U>
 class IteratorVector : iterator<std::random_access_iterator_tag, U> {
 public:
-	typedef U																			iterator_type;
 	typedef typename iterator<std::random_access_iterator_tag, U>::value_type			value_type;
 	typedef typename iterator<std::random_access_iterator_tag, U>::difference_type		difference_type;
 	typedef typename iterator<std::random_access_iterator_tag, U>::pointer				pointer;
@@ -63,17 +62,18 @@ public:
 /************* Iterator for map **************/
 /*********************************************/
 
-template <typename U>
+template <typename U, typename Allocator>
 class IteratorMap : iterator<std::bidirectional_iterator_tag, U> {
 public:
-	typedef U																			iterator_type;
 	typedef typename iterator<std::bidirectional_iterator_tag, U>::value_type			value_type;
 	typedef typename iterator<std::bidirectional_iterator_tag, U>::difference_type		difference_type;
 	typedef typename iterator<std::bidirectional_iterator_tag, U>::pointer				pointer;
 	typedef typename iterator<std::bidirectional_iterator_tag, U>::reference			reference;
 	typedef typename iterator<std::bidirectional_iterator_tag, U>::iterator_category	iterator_category;
+	typedef redBlackTreeNode<value_type, Allocator>										node_type;
+	typedef node_type*																	node_pointer;
 private:
-	pointer _pointer;
+	node_pointer _pointer;
 public:
 };
 
