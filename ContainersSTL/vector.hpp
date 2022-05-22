@@ -520,10 +520,10 @@ public:
 	}
 
 	void swap( vector& other ) {
-		std::swap(_array, other._array);
-		std::swap(_size, other._size);
-		std::swap(_capacity, other._capacity);
-		std::swap(_allocator, other._allocator);
+		swap(_array, other._array);
+		swap(_size, other._size);
+		swap(_capacity, other._capacity);
+		swap(_allocator, other._allocator);
 	}
 
 	/*********************************************/

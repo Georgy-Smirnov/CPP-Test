@@ -3,6 +3,7 @@
 
 #include "utility.hpp"
 #include "iterators.hpp"
+#include "redBlackTree.hpp"
 
 namespace ft {
 
@@ -24,31 +25,45 @@ public:
 	typedef const value_type&								const_reference;
 	typedef typename Allocator::pointer						pointer;
 	typedef typename Allocator::const_pointer				const_pointer;
-	typedef IteratorMap<value_type, allocator_type>			iterator;
-	typedef IteratorMap<const value_type, allocator_type>	const_iterator;
+	// typedef IteratorMap<value_type, allocator_type>			iterator;
+	// typedef IteratorMap<const value_type, allocator_type>	const_iterator;
+private:
 
 	/*********************************************/
 	/************** Member classes ***************/
 	/*********************************************/
 
-	// class value_compare
-private:
-	typedef redBlackTreeNode<value_type, allocator_type>		node;
-	typedef typename Allocator::template rebind<node>::other	node_allocator;
-	typedef	typename node_allocator::pointer					node_pointer;
-	node_pointer	_root;
-	node_pointer	_first;
-	node_pointer	_last;
+	typedef typename redBlackTree<value_type, key_compare, allocator_type>::value_compare value_compare;
+
+	// typedef redBlackTree<value_type, value_compare, allocator_type>	tree;
+	// typedef baseNode<value_type, allocator_type>					base_node;
+	// typedef redBlackTreeNode<value_type, allocator_type>			node;
+	// typedef typename Allocator::template rebind<node>::other		node_allocator;
+	// typedef	typename node_allocator::pointer						node_pointer;
+	
 	size_type		_size;
-	node_allocator	_allocator;
-	//value_compare
+	// node_allocator	_allocator;
+	// value_compare	_comp;
 public:
 	/*********************************************/
 	/************* Member functions **************/
 	/*********************************************/
 
-	//constructors
-
+	map() {
+		redBlackTree<value_type, key_compare, allocator_type > tree;
+		std::cout << "Size: " << tree.size() << std::endl;
+		tree.insert(ft::make_pair<int, std::string>(5, "hello"));
+		std::cout << "Size: " << tree.size() << std::endl;
+		tree.insert(ft::make_pair<int, std::string>(4, "he"));
+		tree.insert(ft::make_pair<int, std::string>(6, "he"));
+		tree.insert(ft::make_pair<int, std::string>(2, "he"));
+		tree.print_tree();
+		// tree.simple_insert(ft::make_pair<int, std::string>(6, "he"));
+	}
+	// explicit map(const Compare& comp, const Allocator& alloc = Allocator()) {}
+	// template< class InputIt >
+	// map(InputIt first, InputIt last, const Compare& comp = Compare(), const Allocator& alloc = Allocator()) {}
+	// map(const map& other);
 	//destructors
 
 	//operator=

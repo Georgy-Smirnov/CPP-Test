@@ -132,6 +132,18 @@ bool lexicographical_compare(InputIt1 first1, InputIt1 last1, InputIt2 first2, I
 }
 
 /*********************************************/
+/******************* swap ********************/
+/*********************************************/
+
+template <typename T>
+void swap(T a, T b) {
+	T tmp;
+	tmp = a;
+	a = b;
+	b = tmp;
+}
+
+/*********************************************/
 /******************* pair ********************/
 /*********************************************/
 
@@ -188,29 +200,6 @@ template <typename T1, typename T2>
 bool operator<=(const ft::pair<T1, T2>& x, const ft::pair<T1, T2>& y) {
 	return !(y < x);
 }
-
-/*********************************************/
-/********* node for red black tree ***********/
-/*********************************************/
-
-template <typename T, typename Allocator>
-class redBlackTreeNode {
-public:
-	typedef T																value_type;
-	typedef redBlackTreeNode*												node_pointer;
-	typedef Allocator														allocator_type;
-	typedef typename Allocator::template rebind<redBlackTreeNode>::other	allocator_node;
-private:
-	value_type		_value;
-	node_pointer 	_left;
-	node_pointer 	_right;
-	node_pointer 	_parent;
-	bool			_red;
-	allocator_node	_allocator;
-public:
-	explicit redBlackTreeNode(const value_type &val = value_type()) : _value(val), _left(nullptr), _right(nullptr), _parent(nullptr), _red(false) {}
-	const value_type& val() const { return _value; }//TEST
-};
 
 } // namespace ft
 
