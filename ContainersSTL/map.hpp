@@ -54,10 +54,10 @@ public:
 		std::cout << "Size: " << tree.size() << std::endl;
 		tree.insert(ft::make_pair<int, std::string>(5, "hello"));
 		std::cout << "Size: " << tree.size() << std::endl;
+		tree.insert(ft::make_pair<int, std::string>(3, "he"));
 		tree.insert(ft::make_pair<int, std::string>(4, "he"));
-		tree.insert(ft::make_pair<int, std::string>(6, "he"));
-		tree.insert(ft::make_pair<int, std::string>(2, "he"));
-		tree.print_tree();
+		// tree.insert(ft::make_pair<int, std::string>(2, "he"));
+		// tree.print_tree();
 		// tree.simple_insert(ft::make_pair<int, std::string>(6, "he"));
 	}
 	// explicit map(const Compare& comp, const Allocator& alloc = Allocator()) {}

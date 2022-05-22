@@ -150,12 +150,76 @@ public:
 	}
 
 	void insert_case4(node_pointer &n) {
-		// node_pointer u = n->uncle();
-		// node_pointer g = n->grandparent();
-		// if (u && u->_red = true) {
-
+		std::cout << "grand: " << n->_parent->_parent << std::endl;
+		std::cout << "n    : " << n->_parent << std::endl;
+		std::cout << "right: " << n << std::endl << std::endl;
+		node_pointer g = n->grandparent();
+		if (n == n->_parent->_right && n->_parent == g->_left) {
+			rotate_left(n->_parent);
+			std::cout << "n    : " << n->_parent << std::endl;
+			std::cout << "leftt: " << n << std::endl;
+			std::cout << "grand: " << n->_parent->_left << std::endl << std::endl;
+			n = n->_left;
+			std::cout << "grand: " << n->_parent->_parent << std::endl;
+			std::cout << "n    : " << n->_parent << std::endl;
+			std::cout << "leftt: " << n << std::endl << std::endl;
+		}
+		// else if (n == n->_parent->_left && n->_parent == g->_right) {
+		// 	rotate_right(n->_parent);
+		// 	n = n->_right;
 		// }
-		// else insert_case4(n);
+		// insert_case5(n);
+	}
+
+	void insert_case5(node_pointer &n) {
+		// std::cout << "addres2: " << n << std::endl;
+		// std::cout << "addres2.2: " << n->_parent << std::endl;
+		// std::cout << "addres2.2: " << n->_parent->_parent << std::endl;
+		// std::cout << "addres2.3: " << n->_parent->_left << std::endl << std::endl;
+		// node_pointer g = n->grandparent();
+		// std::cout << "addres2.4: " << n->_parent << std::endl;
+		// std::cout << "addres2.5: " << g->_left << std::endl;
+		// n->_parent->_red = false;
+		// g->_red = true;
+		// if ((n == n->_parent->_left) && (n->_parent == g->_left))
+		// 	rotate_right(g);
+		// else { std::cout << "HEY!\n"; }
+			// rotate_left(g);
+	}
+
+	void rotate_left(node_pointer &n) {
+		node_pointer pivot = n->_right;	
+		pivot->_parent = n->_parent;
+		if (n->_parent != NULL) {
+		    if (n->_parent->_left==n)
+		        n->_parent->_left = pivot;
+		    else
+		        n->_parent->_right = pivot;
+		}		
+
+		n->_right = pivot->_left;
+		if (pivot->_left != NULL)
+		    pivot->_left->_parent = n;
+
+		n->_parent = pivot;
+		pivot->_left = n;
+	}
+
+	void rotate_right(node_pointer &n) {
+		node_pointer pivot = n->_left;	
+		pivot->_parent = n->_parent;
+		if (n->_parent != NULL) {
+		    if (n->_parent->_left==n)
+		        n->_parent->_left = pivot;
+		    else
+		        n->_parent->_right = pivot;
+		}		
+		n->_left = pivot->_right;
+		if (pivot->_right != NULL)
+		    pivot->_right->_parent = n;
+
+		n->_parent = pivot;
+		pivot->_right = n;
 	}
 
 	void print_tree_rec(const node_pointer &tmp) const {
