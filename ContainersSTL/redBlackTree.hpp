@@ -88,22 +88,26 @@ public:
 		}
 	};
 private:
-	base_node		*_last;
+	base_node		*_root;
 	node_pointer	_first;
 	node_allocator	_allocator;
 	value_compare	_compare;
 	size_type		_size;
 public:
-	redBlackTree() : _last(new base_node()), _first(nullptr), _size(0), _compare(key_compare()) {}
+	redBlackTree() : _root(new base_node()), _first(nullptr), _size(0), _compare(key_compare()) {}
 
 	size_type size() const { return _size; }
 	value_type ret() const { return _first->val(); }
 
+	bool equal_compare(value_type a, value_type b) {
+		return (!_compare(a, b) && !_compare(b, a));
+	}
+
 	void insert(const value_type& val) {
-		node_pointer now = simple_insert(_last->_root, val);
+		node_pointer now = simple_insert(_root->_root, val);
 		if (now == nullptr) return;// Maybe throw
 		++_size;
-		insert_case1(now);
+		// insert_case1(now);
 	}
 
 	node_pointer& simple_insert(node_pointer &node, const value_type& val) {
@@ -125,53 +129,53 @@ public:
 		return node;
 	}
 
-	void insert_case1(node_pointer &n) {
-		if (n->_parent == nullptr)
-			n->_red = false;
-		else insert_case2(n);
-	}
+	// void insert_case1(node_pointer &n) {
+	// 	if (n->_parent == nullptr)
+	// 		n->_red = false;
+	// 	else insert_case2(n);
+	// }
 
-	void insert_case2(node_pointer &n) {
-		if (n->_parent->_red == false)
-			return;
-		else insert_case3(n);
-	}
+	// void insert_case2(node_pointer &n) {
+	// 	if (n->_parent->_red == false)
+	// 		return;
+	// 	else insert_case3(n);
+	// }
 
-	void insert_case3(node_pointer &n) {
-		node_pointer u = n->uncle();
-		node_pointer g = n->grandparent();
-		if (u && u->_red) {
-			n->_parent->_red = false; 
-			u->_red = false;
-			g->_red = true;
-			insert_case1(g);
-		}
-		else insert_case4(n);
-	}
+	// void insert_case3(node_pointer &n) {
+	// 	node_pointer u = n->uncle();
+	// 	node_pointer g = n->grandparent();
+	// 	if (u && u->_red) {
+	// 		n->_parent->_red = false; 
+	// 		u->_red = false;
+	// 		g->_red = true;
+	// 		insert_case1(g);
+	// 	}
+	// 	else insert_case4(n);
+	// }
 
-	void insert_case4(node_pointer &n) {
-		std::cout << "grand: " << n->_parent->_parent << std::endl;
-		std::cout << "n    : " << n->_parent << std::endl;
-		std::cout << "right: " << n << std::endl << std::endl;
-		node_pointer g = n->grandparent();
-		if (n == n->_parent->_right && n->_parent == g->_left) {
-			rotate_left(n->_parent);
-			std::cout << "n    : " << n->_parent << std::endl;
-			std::cout << "leftt: " << n << std::endl;
-			std::cout << "grand: " << n->_parent->_left << std::endl << std::endl;
-			n = n->_left;
-			std::cout << "grand: " << n->_parent->_parent << std::endl;
-			std::cout << "n    : " << n->_parent << std::endl;
-			std::cout << "leftt: " << n << std::endl << std::endl;
-		}
+	// void insert_case4(node_pointer &n) {
+	// 	std::cout << "grand: " << n->_parent->_parent << std::endl;
+	// 	std::cout << "n    : " << n->_parent << std::endl;
+	// 	std::cout << "right: " << n << std::endl << std::endl;
+	// 	node_pointer g = n->grandparent();
+	// 	if (n == n->_parent->_right && n->_parent == g->_left) {
+	// 		rotate_left(n->_parent);
+	// 		std::cout << "n    : " << n->_parent << std::endl;
+	// 		std::cout << "leftt: " << n << std::endl;
+	// 		std::cout << "grand: " << n->_parent->_left << std::endl << std::endl;
+	// 		n = n->_left;
+	// 		std::cout << "grand: " << n->_parent->_parent << std::endl;
+	// 		std::cout << "n    : " << n->_parent << std::endl;
+	// 		std::cout << "leftt: " << n << std::endl << std::endl;
+	// 	}
 		// else if (n == n->_parent->_left && n->_parent == g->_right) {
 		// 	rotate_right(n->_parent);
 		// 	n = n->_right;
 		// }
 		// insert_case5(n);
-	}
+	// }
 
-	void insert_case5(node_pointer &n) {
+	// void insert_case5(node_pointer &n) {
 		// std::cout << "addres2: " << n << std::endl;
 		// std::cout << "addres2.2: " << n->_parent << std::endl;
 		// std::cout << "addres2.2: " << n->_parent->_parent << std::endl;
@@ -185,42 +189,42 @@ public:
 		// 	rotate_right(g);
 		// else { std::cout << "HEY!\n"; }
 			// rotate_left(g);
-	}
+	// }
 
-	void rotate_left(node_pointer &n) {
-		node_pointer pivot = n->_right;	
-		pivot->_parent = n->_parent;
-		if (n->_parent != NULL) {
-		    if (n->_parent->_left==n)
-		        n->_parent->_left = pivot;
-		    else
-		        n->_parent->_right = pivot;
-		}		
+	// void rotate_left(node_pointer &n) {
+	// 	node_pointer pivot = n->_right;	
+	// 	pivot->_parent = n->_parent;
+	// 	if (n->_parent != NULL) {
+	// 	    if (n->_parent->_left==n)
+	// 	        n->_parent->_left = pivot;
+	// 	    else
+	// 	        n->_parent->_right = pivot;
+	// 	}		
 
-		n->_right = pivot->_left;
-		if (pivot->_left != NULL)
-		    pivot->_left->_parent = n;
+	// 	n->_right = pivot->_left;
+	// 	if (pivot->_left != NULL)
+	// 	    pivot->_left->_parent = n;
 
-		n->_parent = pivot;
-		pivot->_left = n;
-	}
+	// 	n->_parent = pivot;
+	// 	pivot->_left = n;
+	// }
 
-	void rotate_right(node_pointer &n) {
-		node_pointer pivot = n->_left;	
-		pivot->_parent = n->_parent;
-		if (n->_parent != NULL) {
-		    if (n->_parent->_left==n)
-		        n->_parent->_left = pivot;
-		    else
-		        n->_parent->_right = pivot;
-		}		
-		n->_left = pivot->_right;
-		if (pivot->_right != NULL)
-		    pivot->_right->_parent = n;
+	// void rotate_right(node_pointer &n) {
+	// 	node_pointer pivot = n->_left;	
+	// 	pivot->_parent = n->_parent;
+	// 	if (n->_parent != NULL) {
+	// 	    if (n->_parent->_left==n)
+	// 	        n->_parent->_left = pivot;
+	// 	    else
+	// 	        n->_parent->_right = pivot;
+	// 	}		
+	// 	n->_left = pivot->_right;
+	// 	if (pivot->_right != NULL)
+	// 	    pivot->_right->_parent = n;
 
-		n->_parent = pivot;
-		pivot->_right = n;
-	}
+	// 	n->_parent = pivot;
+	// 	pivot->_right = n;
+	// }
 
 	void print_tree_rec(const node_pointer &tmp) const {
 		if (tmp == nullptr)
@@ -232,7 +236,8 @@ public:
 	}
 
 	void print_tree() const {
-		print_tree_rec(this->_last->_root);
+		std::cout << "************** root ***************\n" << "root: " << this->_root->_root << "\nlast: " << this->_root->_last << "\n***********************************\n";
+		print_tree_rec(this->_root->_root);
 	}
 };
 
