@@ -8,4 +8,5 @@
 int main(void)
 {
 	ft::map<int, std::string> m;
+	ft::redBlackTreeNode<ft::pair<int, std::string> > a;
 }

@@ -5,7 +5,7 @@
 
 namespace ft {
 
-template <typename T, typename Allocator>
+template <typename T>
 struct redBlackTreeNode {
 	typedef T																value_type;
 	typedef redBlackTreeNode*												node_pointer;
@@ -18,6 +18,19 @@ struct redBlackTreeNode {
 
 	explicit redBlackTreeNode(const value_type &val = value_type())
 		: _value(val), _left(nullptr), _right(nullptr), _parent(nullptr), _red(true) {}
+	redBlackTreeNode(const redBlackTreeNode& other)
+		: _value(other._value), _left(other._left), _right(other._right), _parent(other._parent), _red(other._red) {}
+	redBlackTreeNode& operator=(const redBlackTreeNode& other) {
+		if (&other == this) return *this;
+		_value = other._value;
+		_left = other._left;
+		_right = other._right;
+		_parent = other._parent;
+		_red = other._red;
+		return *this;
+	}
+	~redBlackTreeNode() {}
+
 	const value_type& val() const { return _value; }//TEST
 	
 	bool color() { return _red; }
@@ -58,13 +71,13 @@ struct redBlackTreeNode {
 	node_pointer return_right() { return _right; }
 };
 
-template <typename T, typename Allocator>
-struct baseNode {
-	typedef redBlackTreeNode<T, Allocator>*	node_pointer;
-	node_pointer 	_root;
-	node_pointer 	_last;
-	baseNode() : _root(nullptr), _last(nullptr) {}
-};
+// template <typename T>
+// struct baseNode {
+// 	typedef redBlackTreeNode<T>*	node_pointer;
+// 	node_pointer 	_root;
+// 	node_pointer 	_last;
+// 	baseNode() : _root(nullptr), _last(nullptr) {}
+// };
 
 template <typename Value, typename Compare, typename Allocator>
 class redBlackTree {
@@ -73,10 +86,11 @@ public:
 	typedef Compare												key_compare;
 	typedef Allocator											allocator_type;
 	typedef std::size_t											size_type;	
-	typedef redBlackTreeNode<value_type, allocator_type>		node;
-	typedef baseNode<value_type, allocator_type>				base_node;
+
+	typedef redBlackTreeNode<value_type>		node;
 	typedef typename Allocator::template rebind<node>::other	node_allocator;
 	typedef	typename node_allocator::pointer					node_pointer;
+
 	class value_compare : public std::binary_function<value_type, value_type, bool>
 	{
 	protected:
@@ -88,32 +102,34 @@ public:
 		}
 	};
 private:
-	base_node		*_root;
-	node_pointer	_first;
+	node_pointer	_root;
 	node_allocator	_allocator;
 	value_compare	_compare;
 	size_type		_size;
 public:
-	redBlackTree() : _root(new base_node()), _first(nullptr), _size(0), _compare(key_compare()) {}
-
+	redBlackTree() : _root(nullptr), _size(0), _compare(key_compare()) {}
+	~redBlackTree() {
+		//destroy;
+		//deallocate;
+	}
 	size_type size() const { return _size; }
-	value_type ret() const { return _first->val(); }
+	// value_type ret() const { return _first->val(); }
 
 	bool equal_compare(value_type a, value_type b) {
 		return (!_compare(a, b) && !_compare(b, a));
 	}
 
 	void insert(const value_type& val) {
-		node_pointer now = simple_insert(_root->_root, val);
+		node_pointer now = simple_insert(_root, val);
 		if (now == nullptr) return;// Maybe throw
 		++_size;
-		// insert_case1(now);
+		insert_case1(now);
 	}
 
 	node_pointer& simple_insert(node_pointer &node, const value_type& val) {
 		if (node == nullptr) {
 			node = _allocator.allocate(1);
-			_allocator.construct(node, val);//try
+			_allocator.construct(node, val);
 			return node;
 		}
 		else if (_compare(val, node->_value)) {
@@ -129,102 +145,130 @@ public:
 		return node;
 	}
 
-	// void insert_case1(node_pointer &n) {
-	// 	if (n->_parent == nullptr)
-	// 		n->_red = false;
-	// 	else insert_case2(n);
-	// }
+	void my_insert(const value_type& val) {
+		node_pointer new_node = _allocator.allocate(1);
+		_allocator.construct(new_node, val);
+		if (_root == nullptr) {
+			_root = new_node;
+			new_node->_red = false;
+		}
+		node_pointer tmp = _root;
+		node_pointer prev;
+		while (tmp) {
+			if (!_compare(val, tmp->_value) && !_compare(tmp->_value, val)) return;
+			prev = tmp;
+			if (_compare(val, tmp->_value))
+				tmp = tmp->_left;
+			else if (_compare(tmp->_value, val))
+				tmp = tmp->_right;
+		}
+		new_node->_parent = prev;
+		if (_compare(val, prev->_value))
+				prev->_left = new_node;
+		else if (_compare(prev->_value, val))
+				prev->_right = new_node;
+		balancing(new_node);
+	}
 
-	// void insert_case2(node_pointer &n) {
-	// 	if (n->_parent->_red == false)
-	// 		return;
-	// 	else insert_case3(n);
-	// }
+	void balancing(node_pointer& node) {
+		if (_root == node) { //если корень
+			node->_red = false;
+			return;
+		}
+		while (node->_parent && node->_parent->_red) { //пока отец красный
+			if (node->grandparent() && (node->grandparent())->_left == node->_parent) { //если отец левый сын
+				if (node->uncle() && (node->uncle())->_red) { // если дядя красный
+					(node->uncle())->_red = false;
+					node->_parent->_red = false;
+					(node->grandparent())->_red = true;
+					node = node->grandparent();
+				}
+				else {	// если дядя черный
+					if (node->_parent->_right == node) {// правый сын
+						node = node->_parent;
+						rotate_left(node);
+					}
+					node->_parent->_red = false;
+					(node->grandparent())->_red = true;
+					rotate_right(node->grandparent());
+				}
+			}
+			else { //если отец правый сын
+				if (node->uncle() && (node->uncle())->_red) { // если дядя красный
+					(node->uncle())->_red = false;
+					node->_parent->_red = false;
+					(node->grandparent())->_red = true;
+					node = node->grandparent();
+				}
+				else { // если дядя черный
+					if (node->_parent->_left == node) {// левый сын
+						node = node->_parent;
+						rotate_right(node);
+					}
+					node->_parent->_red = false;
+					(node->grandparent())->_red = true;
+					rotate_left(node->grandparent());
+				}
+			}
+		}
+		_root->_red = false;
+	}
 
-	// void insert_case3(node_pointer &n) {
-	// 	node_pointer u = n->uncle();
-	// 	node_pointer g = n->grandparent();
-	// 	if (u && u->_red) {
-	// 		n->_parent->_red = false; 
-	// 		u->_red = false;
-	// 		g->_red = true;
-	// 		insert_case1(g);
-	// 	}
-	// 	else insert_case4(n);
-	// }
-
-	// void insert_case4(node_pointer &n) {
-	// 	std::cout << "grand: " << n->_parent->_parent << std::endl;
-	// 	std::cout << "n    : " << n->_parent << std::endl;
-	// 	std::cout << "right: " << n << std::endl << std::endl;
-	// 	node_pointer g = n->grandparent();
-	// 	if (n == n->_parent->_right && n->_parent == g->_left) {
-	// 		rotate_left(n->_parent);
-	// 		std::cout << "n    : " << n->_parent << std::endl;
-	// 		std::cout << "leftt: " << n << std::endl;
-	// 		std::cout << "grand: " << n->_parent->_left << std::endl << std::endl;
-	// 		n = n->_left;
-	// 		std::cout << "grand: " << n->_parent->_parent << std::endl;
-	// 		std::cout << "n    : " << n->_parent << std::endl;
-	// 		std::cout << "leftt: " << n << std::endl << std::endl;
-	// 	}
-		// else if (n == n->_parent->_left && n->_parent == g->_right) {
-		// 	rotate_right(n->_parent);
-		// 	n = n->_right;
+	void rotate_left(node_pointer n) {
+		node_pointer son = n->_right;
+		son->_parent = n->_parent;
+		n->_parent = son;
+		if (son->_parent) {
+			if (son->_parent->_left == n)
+				son->_parent->_left = son;
+			else
+				son->_parent->_right = son;
+		}
+		else
+			_root = son;
+		n->_right = son->_left;
+		if (son->_left)
+			n->_right->_parent = n;
+		n->_parent = son;
+		son->_left = n;
+		// std::cout << std::endl;
+		// std::cout << "rotate s      : " << son << std::endl;
+		// if (son) {
+		// std::cout << "rotate s left : " << son->_left << std::endl;
+		// std::cout << "rotate s right: " <<son->_right << std::endl;
+		// std::cout << "rotate s paren: " << son->_parent << std::endl;
 		// }
-		// insert_case5(n);
-	// }
+		// std::cout << "rotate n      : " << n << std::endl;
+		// if (n) {
+		// std::cout << "rotate n left : " << n->_left << std::endl;
+		// std::cout << "rotate n right: " << n->_right << std::endl;
+		// std::cout << "rotate n paren: " << n->_parent << std::endl;
+		// }
+		// std::cout << "rotate g      : " << g << std::endl;
+		// if (g) {
+		// std::cout << "rotate g left : " << g->_left << std::endl;
+		// std::cout << "rotate g right: " << g->_right << std::endl;
+		// std::cout << "rotate g paren: " << g->_parent << std::endl;
+		// }
+		}
 
-	// void insert_case5(node_pointer &n) {
-		// std::cout << "addres2: " << n << std::endl;
-		// std::cout << "addres2.2: " << n->_parent << std::endl;
-		// std::cout << "addres2.2: " << n->_parent->_parent << std::endl;
-		// std::cout << "addres2.3: " << n->_parent->_left << std::endl << std::endl;
-		// node_pointer g = n->grandparent();
-		// std::cout << "addres2.4: " << n->_parent << std::endl;
-		// std::cout << "addres2.5: " << g->_left << std::endl;
-		// n->_parent->_red = false;
-		// g->_red = true;
-		// if ((n == n->_parent->_left) && (n->_parent == g->_left))
-		// 	rotate_right(g);
-		// else { std::cout << "HEY!\n"; }
-			// rotate_left(g);
-	// }
-
-	// void rotate_left(node_pointer &n) {
-	// 	node_pointer pivot = n->_right;	
-	// 	pivot->_parent = n->_parent;
-	// 	if (n->_parent != NULL) {
-	// 	    if (n->_parent->_left==n)
-	// 	        n->_parent->_left = pivot;
-	// 	    else
-	// 	        n->_parent->_right = pivot;
-	// 	}		
-
-	// 	n->_right = pivot->_left;
-	// 	if (pivot->_left != NULL)
-	// 	    pivot->_left->_parent = n;
-
-	// 	n->_parent = pivot;
-	// 	pivot->_left = n;
-	// }
-
-	// void rotate_right(node_pointer &n) {
-	// 	node_pointer pivot = n->_left;	
-	// 	pivot->_parent = n->_parent;
-	// 	if (n->_parent != NULL) {
-	// 	    if (n->_parent->_left==n)
-	// 	        n->_parent->_left = pivot;
-	// 	    else
-	// 	        n->_parent->_right = pivot;
-	// 	}		
-	// 	n->_left = pivot->_right;
-	// 	if (pivot->_right != NULL)
-	// 	    pivot->_right->_parent = n;
-
-	// 	n->_parent = pivot;
-	// 	pivot->_right = n;
-	// }
+		void rotate_right(node_pointer n) {
+		node_pointer son = n->_left;
+		son->_parent = n->_parent;
+		if (n->_parent) {
+			if (n->_parent->_left == n)
+				n->_parent->_left = son;
+			else
+				n->_parent->_right = son;
+		}
+		else
+			_root = son;
+		n->_left = son->_right;
+		if (son->_right)
+			n->_left->_parent = n;
+		n->_parent = son;
+		son->_right = n;
+		}
 
 	void print_tree_rec(const node_pointer &tmp) const {
 		if (tmp == nullptr)
@@ -236,8 +280,8 @@ public:
 	}
 
 	void print_tree() const {
-		std::cout << "************** root ***************\n" << "root: " << this->_root->_root << "\nlast: " << this->_root->_last << "\n***********************************\n";
-		print_tree_rec(this->_root->_root);
+		std::cout << "\n\n************** root ***************\n" << "root: " << this->_root << "\n***********************************\n";
+		print_tree_rec(this->_root);
 	}
 };
 
