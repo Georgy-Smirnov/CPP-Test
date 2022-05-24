@@ -1,15 +1,14 @@
 #ifndef REDBLACKRTEE_HPP
 #define REDBLACKRTEE_HPP
 
-#include "utility.hpp"
+#include "iterators.hpp"
 
 namespace ft {
 
 template <typename T>
 struct redBlackTreeNode {
-	typedef T																value_type;
-	typedef redBlackTreeNode*												node_pointer;
-
+	typedef T					value_type;
+	typedef redBlackTreeNode*	node_pointer;
 	value_type		_value;
 	node_pointer 	_left;
 	node_pointer 	_right;
@@ -18,8 +17,10 @@ struct redBlackTreeNode {
 
 	explicit redBlackTreeNode(const value_type &val = value_type())
 		: _value(val), _left(nullptr), _right(nullptr), _parent(nullptr), _red(true) {}
+
 	redBlackTreeNode(const redBlackTreeNode& other)
 		: _value(other._value), _left(other._left), _right(other._right), _parent(other._parent), _red(other._red) {}
+
 	redBlackTreeNode& operator=(const redBlackTreeNode& other) {
 		if (&other == this) return *this;
 		_value = other._value;
@@ -29,18 +30,8 @@ struct redBlackTreeNode {
 		_red = other._red;
 		return *this;
 	}
+
 	~redBlackTreeNode() {}
-
-	const value_type& val() const { return _value; }//TEST
-	
-	bool color() { return _red; }
-
-	void change_color() {
-		if (_red == false)
-			_red = true;
-		else
-			_red = false;
-	}
 
  	node_pointer grandparent() {
 		if (_parent != nullptr && _parent->_parent != nullptr)
@@ -71,13 +62,8 @@ struct redBlackTreeNode {
 	node_pointer return_right() { return _right; }
 };
 
-// template <typename T>
-// struct baseNode {
-// 	typedef redBlackTreeNode<T>*	node_pointer;
-// 	node_pointer 	_root;
-// 	node_pointer 	_last;
-// 	baseNode() : _root(nullptr), _last(nullptr) {}
-// };
+template <typename U>
+class IteratorTree;
 
 template <typename Value, typename Compare, typename Allocator>
 class redBlackTree {
@@ -86,10 +72,10 @@ public:
 	typedef Compare												key_compare;
 	typedef Allocator											allocator_type;
 	typedef std::size_t											size_type;	
-
-	typedef redBlackTreeNode<value_type>		node;
+	typedef redBlackTreeNode<value_type>						node;
 	typedef typename Allocator::template rebind<node>::other	node_allocator;
 	typedef	typename node_allocator::pointer					node_pointer;
+	typedef IteratorTree<value_type>							iterator;
 
 	class value_compare : public std::binary_function<value_type, value_type, bool>
 	{
@@ -142,6 +128,7 @@ public:
 		else if (_compare(prev->_value, val))
 				prev->_right = new_node;
 		balancing(new_node);
+		++_size;
 	}
 
 	void balancing(node_pointer& node) {
@@ -205,9 +192,9 @@ public:
 			n->_right->_parent = n;
 		n->_parent = son;
 		son->_left = n;
-		}
+	}
 
-		void rotate_right(node_pointer n) {
+	void rotate_right(node_pointer n) {
 		node_pointer son = n->_left;
 		son->_parent = n->_parent;
 		if (n->_parent) {
@@ -223,7 +210,21 @@ public:
 			n->_left->_parent = n;
 		n->_parent = son;
 		son->_right = n;
-		}
+	}
+
+	node_pointer& first() {
+		node_pointer tmp = _root;
+		while (tmp->_left)
+			tmp = tmp->_left;
+		return tmp;
+	}
+
+	node_pointer& last() {
+		node_pointer tmp = _root;
+		while (tmp->_right)
+			tmp = tmp->_right;
+		return tmp;
+	}
 
 	void print_tree_rec(const node_pointer &tmp) const {
 		if (tmp == nullptr)
