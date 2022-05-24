@@ -120,32 +120,6 @@ public:
 	}
 
 	void insert(const value_type& val) {
-		node_pointer now = simple_insert(_root, val);
-		if (now == nullptr) return;// Maybe throw
-		++_size;
-		insert_case1(now);
-	}
-
-	node_pointer& simple_insert(node_pointer &node, const value_type& val) {
-		if (node == nullptr) {
-			node = _allocator.allocate(1);
-			_allocator.construct(node, val);
-			return node;
-		}
-		else if (_compare(val, node->_value)) {
-			node_pointer& tmp = simple_insert(node->_left, val);
-			node->_left->_parent = node;
-			return tmp;
-		}
-		else if (_compare(node->_value, val)) {
-			node_pointer& tmp = simple_insert(node->_right, val);
-			node->_right->_parent = node;
-			return tmp;
-		}
-		return node;
-	}
-
-	void my_insert(const value_type& val) {
 		node_pointer new_node = _allocator.allocate(1);
 		_allocator.construct(new_node, val);
 		if (_root == nullptr) {
@@ -231,25 +205,6 @@ public:
 			n->_right->_parent = n;
 		n->_parent = son;
 		son->_left = n;
-		// std::cout << std::endl;
-		// std::cout << "rotate s      : " << son << std::endl;
-		// if (son) {
-		// std::cout << "rotate s left : " << son->_left << std::endl;
-		// std::cout << "rotate s right: " <<son->_right << std::endl;
-		// std::cout << "rotate s paren: " << son->_parent << std::endl;
-		// }
-		// std::cout << "rotate n      : " << n << std::endl;
-		// if (n) {
-		// std::cout << "rotate n left : " << n->_left << std::endl;
-		// std::cout << "rotate n right: " << n->_right << std::endl;
-		// std::cout << "rotate n paren: " << n->_parent << std::endl;
-		// }
-		// std::cout << "rotate g      : " << g << std::endl;
-		// if (g) {
-		// std::cout << "rotate g left : " << g->_left << std::endl;
-		// std::cout << "rotate g right: " << g->_right << std::endl;
-		// std::cout << "rotate g paren: " << g->_parent << std::endl;
-		// }
 		}
 
 		void rotate_right(node_pointer n) {

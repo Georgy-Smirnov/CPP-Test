@@ -52,12 +52,12 @@ public:
 	map() {
 		redBlackTree<value_type, key_compare, allocator_type > tree;
 		// std::cout << "Size: " << tree.size() << std::endl;
-		tree.my_insert(ft::make_pair<int, std::string>(5, "hello"));
+		tree.insert(ft::make_pair<int, std::string>(5, "hello"));
 		// std::cout << "Size: " << tree.size() << std::endl;
-		tree.my_insert(ft::make_pair<int, std::string>(3, "he"));
-		tree.my_insert(ft::make_pair<int, std::string>(4, "he"));
-		// tree.insert(ft::make_pair<int, std::string>(2, "he"));
-		// tree.insert(ft::make_pair<int, std::string>(6, "he"));
+		tree.insert(ft::make_pair<int, std::string>(3, "he"));
+		tree.insert(ft::make_pair<int, std::string>(4, "he"));
+		tree.insert(ft::make_pair<int, std::string>(2, "he"));
+		tree.insert(ft::make_pair<int, std::string>(6, "he"));
 		tree.print_tree();
 	}
 	// explicit map(const Compare& comp, const Allocator& alloc = Allocator()) {}
