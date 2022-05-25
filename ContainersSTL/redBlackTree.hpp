@@ -65,17 +65,14 @@ struct redBlackTreeNode {
 template <typename U>
 class IteratorTree;
 
-template <typename Value, typename Compare, typename Allocator>
+template <typename value_type, typename key_compare, typename allocator_type>
 class redBlackTree {
 public:
-	typedef Value												value_type;
-	typedef Compare												key_compare;
-	typedef Allocator											allocator_type;
-	typedef std::size_t											size_type;	
-	typedef redBlackTreeNode<value_type>						node;
-	typedef typename Allocator::template rebind<node>::other	node_allocator;
-	typedef	typename node_allocator::pointer					node_pointer;
-	typedef IteratorTree<value_type>							iterator;
+	typedef std::size_t												size_type;	
+	typedef redBlackTreeNode<value_type>							node;
+	typedef typename allocator_type::template rebind<node>::other	node_allocator;
+	typedef	typename node_allocator::pointer						node_pointer;
+	typedef IteratorTree<value_type>								iterator;
 
 	class value_compare : public std::binary_function<value_type, value_type, bool>
 	{
@@ -173,6 +170,104 @@ public:
 			}
 		}
 		_root->_red = false;
+	}
+
+	node_pointer search(const value_type& val) {
+		node_pointer tmp = _root;
+		while (tmp) {
+			if (_compare(val, tmp->_value))
+				tmp = tmp->_left;
+			else if (_compare(tmp->_value, val))
+				tmp = tmp->_right;
+			else
+				return tmp;
+		}
+		return (tmp);
+	}
+
+	void free_node(node_pointer &node) {
+		_allocator.destroy(node);
+		_allocator.deallocate(node, 1);
+	}
+
+	void deleted(const value_type& val) {
+		node_pointer node = search(val);
+		if (node->_left == nullptr && node->_right == nullptr) { //если у ноды нет детей
+			if (node == _root) { // если корень
+				free_node(node);
+				_root = nullptr;
+			}
+			else { // не корень
+				node->_parent = nullptr;
+				free_node(node);
+			}
+			--_size;
+		}
+		else if (node->_left == nullptr && node->_right != nullptr) { // один правый ребенок 
+			if (node == _root) {
+				node->_right->_parent = nullptr;
+				free_node(node);
+			}
+			else if (node->_parent->_left == node) {
+				node->_parent->_left = node->_right;
+				node->_right->_parent = node->_parent;
+				free_node(node);
+			}
+			else if (node->_parent->_right == node) {
+				node->_parent->_right = node->_right;
+				node->_right->_parent = node->_parent;
+				free_node(node);
+			}
+		}
+		else if (node->_right == nullptr && node->_left != nullptr) { // один левый ребенок
+			if (node == _root) {
+				node->_left->_parent = nullptr;
+				free_node(node);
+			}
+			else if (node->_parent->_left == node) {
+				node->_parent->_left = node->_left;
+				node->_left->_parent = node->_parent;
+				free_node(node);
+			}
+			else if (node->_parent->_right == node) {
+				node->_parent->_right = node->_left;
+				node->_left->_parent = node->_parent;
+				free_node(node);
+			}
+		}
+		else { // два ребенка
+			node_pointer nextNode = node->_right;
+			while (nextNode->_left)							// следующая нода в дереве по величине
+				nextNode = nextNode->_left; 
+			if (nextNode->_right != nullptr) {				// если у этой ноды есть ребенок
+				nextNode->_parent->_left = nextNode->_right;
+				nextNode->_right->_parent = nextNode->_parent;
+				swop(nextNode, node);
+				free_node(node);
+			} 
+			else {											// если у этой ноды нет ребенка
+				nextNode->_parent->_left = nullptr;
+				swop(nextNode, node);
+				free_node(node);
+			}
+		}
+	}
+
+	void swop(node_pointer& from, node_pointer& to) {
+		from->_red = to->_red;
+		from->_parent = to->_parent;
+		if (to->_parent && to->_parent->_left == to)
+			to->_parent->_left = from;
+		else if (to->_parent && to->_parent->_right == to)
+			to->_parent->_right = from;
+		else if (to->_parent == nullptr)
+			_root = from;
+		from->_left = to->_left;
+		if (to->_left)
+			to->_left->_parent = from;
+		from->_right = to->_right;
+		if (to->_right)
+			to->_right->_parent = from;
 	}
 
 	void rotate_left(node_pointer n) {

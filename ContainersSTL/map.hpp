@@ -16,7 +16,7 @@ public:
 
 	typedef Key												key_type;
 	typedef T												mapped_type;
-	typedef pair<const Key, T>								value_type;
+	typedef pair<const key_type, mapped_type>				value_type;
 	typedef std::size_t										size_type;
 	typedef std::ptrdiff_t									difference_type;
 	typedef Compare											key_compare;
@@ -52,13 +52,22 @@ public:
 	map() {
 		redBlackTree<value_type, key_compare, allocator_type > tree;
 		// std::cout << "Size: " << tree.size() << std::endl;
-		tree.insert(ft::make_pair<int, std::string>(5, "hello"));
+		tree.insert(ft::make_pair<int, std::string>(50, "hello"));
 		// std::cout << "Size: " << tree.size() << std::endl;
-		tree.insert(ft::make_pair<int, std::string>(3, "he"));
-		tree.insert(ft::make_pair<int, std::string>(4, "he"));
-		tree.insert(ft::make_pair<int, std::string>(2, "he"));
-		tree.insert(ft::make_pair<int, std::string>(6, "he"));
+		tree.insert(ft::make_pair<int, std::string>(30, "he"));
+		tree.insert(ft::make_pair<int, std::string>(40, "he"));
+		tree.insert(ft::make_pair<int, std::string>(20, "he"));
+		tree.insert(ft::make_pair<int, std::string>(60, "he"));
+		tree.insert(ft::make_pair<int, std::string>(45, "he"));
+		tree.insert(ft::make_pair<int, std::string>(47, "he"));
+		tree.insert(ft::make_pair<int, std::string>(46, "heasdsad"));
+		tree.insert(ft::make_pair<int, std::string>(42, "he"));
 		tree.print_tree();
+		tree.deleted(ft::make_pair<int, std::string>(46, "he"));
+		tree.print_tree();
+		// tree.find(5).second = "lol";
+		// tree.print_tree();
+		
 	}
 	// explicit map(const Compare& comp, const Allocator& alloc = Allocator()) {}
 	// template< class InputIt >
