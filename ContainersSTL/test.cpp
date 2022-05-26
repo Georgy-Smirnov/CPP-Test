@@ -100,7 +100,7 @@ int main(void)
 	tree.insert(8);
 	// tree.print_tree();
 	tree.erase(1);
-	// tree.print_tree();
+	tree.print_tree();
 	// list<int> l;
 	// l.add(7);
 	// l.add(8);
