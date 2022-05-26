@@ -90,18 +90,29 @@ public:
 
 int main(void)
 {
-	list<int> l;
-	l.add(7);
-	l.add(8);
-	l.add(17);
-	l.add(7321);
-	l.add(7213);
-	l.add(71);
-	l.add(7675);
-	l.add(5767);
-	l.print_list();
-	// ft::map<int, std::string> m;
-		// std::map<int, A> mapp;
+	ft::redBlackTree<int> tree;
+	tree.insert(10);
+	tree.insert(1);
+	tree.insert(3);
+	tree.insert(15);
+	tree.insert(5);
+	tree.insert(7);
+	tree.insert(8);
+	// tree.print_tree();
+	tree.erase(1);
+	// tree.print_tree();
+	// list<int> l;
+	// l.add(7);
+	// l.add(8);
+	// l.add(17);
+	// l.add(7321);
+	// l.add(7213);
+	// l.add(71);
+	// l.add(7675);
+	// l.add(5767);
+	// l.print_list();
+	ft::map<int, std::string> m;
+	// std::map<int, A> mapp;
 		// mapp.insert(std::make_pair<int, A>(int(), 5));
 	// mapp.insert(std::make_pair<int, std::string>(5, "hello"));
 	// mapp.insert(std::make_pair<int, std::string>(1, "h"));

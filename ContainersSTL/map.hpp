@@ -33,38 +33,44 @@ private:
 	/************** Member classes ***************/
 	/*********************************************/
 
-	typedef typename redBlackTree<value_type, key_compare, allocator_type>::value_compare value_compare;
+	class value_compare : public std::binary_function<value_type, value_type, bool>
+	{
+	protected:
+	    key_compare comp;
+	public:
+	    value_compare(const key_compare& pred) : comp(pred) {}
+	    bool operator()(const value_type& left, const value_type& right) const {
+			return comp(left.first, right.first);
+		}
+	};
 
-	// typedef redBlackTree<value_type, value_compare, allocator_type>	tree;
-	// typedef baseNode<value_type, allocator_type>					base_node;
-	// typedef redBlackTreeNode<value_type, allocator_type>			node;
-	// typedef typename Allocator::template rebind<node>::other		node_allocator;
-	// typedef	typename node_allocator::pointer						node_pointer;
-	
-	size_type		_size;
-	// node_allocator	_allocator;
-	// value_compare	_comp;
+	typedef redBlackTree<value_type, value_compare, allocator_type> tree;
+	value_compare _compare;
+	tree _tree;
 public:
 	/*********************************************/
 	/************* Member functions **************/
 	/*********************************************/
 
-	map() {
-		redBlackTree<value_type, key_compare, allocator_type > tree;
+	map() : _compare(key_compare()), _tree(_compare) {
+
+		// value_compare a = new value_compare();
+		// std::cout << _tree(make_pair<int, int>(5, 1), make_pair<int, int>(6, 1)) << "\n";
+		// tree tree;
 		// std::cout << "Size: " << tree.size() << std::endl;
-		tree.insert(ft::make_pair<int, std::string>(50, "hello"));
-		// std::cout << "Size: " << tree.size() << std::endl;
-		tree.insert(ft::make_pair<int, std::string>(30, "he"));
-		tree.insert(ft::make_pair<int, std::string>(40, "he"));
-		tree.insert(ft::make_pair<int, std::string>(20, "he"));
-		tree.insert(ft::make_pair<int, std::string>(60, "he"));
-		tree.insert(ft::make_pair<int, std::string>(45, "he"));
-		tree.insert(ft::make_pair<int, std::string>(47, "he"));
-		tree.insert(ft::make_pair<int, std::string>(46, "heasdsad"));
-		tree.insert(ft::make_pair<int, std::string>(42, "he"));
-		tree.print_tree();
-		tree.deleted(ft::make_pair<int, std::string>(46, "he"));
-		tree.print_tree();
+		// tree.insert(ft::make_pair<int, std::string>(50, "hello"));
+		// // std::cout << "Size: " << tree.size() << std::endl;
+		// tree.insert(ft::make_pair<int, std::string>(30, "he"));
+		// tree.insert(ft::make_pair<int, std::string>(40, "he"));
+		// tree.insert(ft::make_pair<int, std::string>(20, "he"));
+		// tree.insert(ft::make_pair<int, std::string>(60, "he"));
+		// tree.insert(ft::make_pair<int, std::string>(45, "he"));
+		// tree.insert(ft::make_pair<int, std::string>(47, "he"));
+		// tree.insert(ft::make_pair<int, std::string>(46, "heasdsad"));
+		// tree.insert(ft::make_pair<int, std::string>(42, "he"));
+		// tree.print_tree();
+		// tree.deleted(ft::make_pair<int, std::string>(46, "he"));
+		// tree.print_tree();
 		// tree.find(5).second = "lol";
 		// tree.print_tree();
 		
