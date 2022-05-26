@@ -145,16 +145,16 @@ public:
 	}
 
 	void balanced_after_added(node_pointer& node) {
-		while (node->_parent && node->_parent->_red) { //пока отец красный
-			if (node->grandparent() && (node->grandparent())->_left == node->_parent) { //если отец левый сын
-				if (node->uncle() && (node->uncle())->_red) { // если дядя красный
+		while (node->_parent && node->_parent->_red) {
+			if (node->grandparent() && (node->grandparent())->_left == node->_parent) {
+				if (node->uncle() && (node->uncle())->_red) {
 					(node->uncle())->_red = false;
 					node->_parent->_red = false;
 					(node->grandparent())->_red = true;
 					node = node->grandparent();
 				}
-				else {	// если дядя черный
-					if (node->_parent->_right == node) {// правый сын
+				else {
+					if (node->_parent->_right == node) {
 						node = node->_parent;
 						rotate_left(node);
 					}
@@ -163,15 +163,15 @@ public:
 					rotate_right(node->grandparent());
 				}
 			}
-			else { //если отец правый сын
-				if (node->uncle() && (node->uncle())->_red) { // если дядя красный
+			else {
+				if (node->uncle() && (node->uncle())->_red) {
 					(node->uncle())->_red = false;
 					node->_parent->_red = false;
 					(node->grandparent())->_red = true;
 					node = node->grandparent();
 				}
-				else { // если дядя черный
-					if (node->_parent->_left == node) {// левый сын
+				else {
+					if (node->_parent->_left == node) {
 						node = node->_parent;
 						rotate_right(node);
 					}
