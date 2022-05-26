@@ -253,6 +253,21 @@ public:
 		}
 	}
 
+	void lol(const value_type& val) {
+		node_pointer node = search(val);
+		if (node->_left == nullptr && node->_right == nullptr) { //если у ноды нет детей
+			if (node == _root) { // если корень
+				free_node(node);
+				_root = nullptr;
+			}
+			else { // не корень
+				node->_parent = nullptr;
+				free_node(node);
+			}
+			--_size;
+		}
+	}
+
 	void swop(node_pointer& from, node_pointer& to) {
 		from->_red = to->_red;
 		from->_parent = to->_parent;
@@ -268,6 +283,30 @@ public:
 		from->_right = to->_right;
 		if (to->_right)
 			to->_right->_parent = from;
+	}
+
+	void swop_node(node_pointer& first, node_pointer& second) { // second всегда имеет родителя!
+		if (first->parent) {
+			if (first->_paren->_left == first) {
+				if (second->_parent_left == second)
+					std::swap<node_pointer>(first->_parent->_left, second->_parent->_left);
+				else
+					std::swap<node_pointer>(first->_parent->_left, second->_parent->_right);		
+			}
+			else {
+				if (second->_parent_left == second)
+					std::swap<node_pointer>(first->_parent->_right, second->_parent->_left);
+				else
+					std::swap<node_pointer>(first->_parent->_right, second->_parent->_right);
+			}
+		}
+		else {
+			if (second->_parent_left == second)
+				std::swap<node_pointer>(nullptr, second->_parent->_left);
+			else
+				std::swap<node_pointer>(nullptr, second->_parent->_right);	
+		}
+
 	}
 
 	void rotate_left(node_pointer n) {
