@@ -14,9 +14,10 @@ struct redBlackTreeNode {
 	node_pointer 	_right;
 	node_pointer 	_parent;
 	bool			_red;
+	bool			_nil;
 
 	explicit redBlackTreeNode(node_pointer& nil, const value_type &val = value_type())
-		: _value(val), _left(nil), _right(nil), _parent(nullptr), _red(true) {}
+		: _value(val), _left(nil), _right(nil), _parent(nullptr), _red(true), _nil(false) {}
 
 	redBlackTreeNode(const redBlackTreeNode& other)
 		: _value(other._value), _left(other._left), _right(other._right), _parent(other._parent), _red(other._red) {}
@@ -48,6 +49,46 @@ struct redBlackTreeNode {
 		return gp->_left;	
 	}
 
+	node_pointer tree_min()  {
+		node_pointer node = this;
+		while (!node->_left->_nil)
+			node = node->_left;
+		return (node);
+	}
+
+	node_pointer tree_max()  {
+		node_pointer node = this;
+		while (!node->_right->_nil)
+			node = node->_right;
+		return (node);
+	}
+
+	node_pointer increment() {
+		node_pointer node = this;
+		if (!node->_right->_nil)
+			return node->_right->tree_min();
+		node_pointer next = node->_parent;
+		while (!next->_nil && node == next->_right) {
+			node = next;
+			next = next->_parent;
+		}
+		return next;
+	}
+
+	node_pointer dicrement() {
+		node_pointer node = this;
+		if (node->_nil)
+			return node->_right;
+		if (!node->_left->_nil)
+			return node->_right->tree_max();
+		node_pointer prev = node->_parent;
+		while (!prev->_nil && node == prev->_left) {
+			node = prev;
+			prev = prev->_parent;
+		}
+		return prev;
+	}
+
 	void print_node() {
 		std::cout << "==> This Node is ";
 		if (_red == true)
@@ -58,9 +99,6 @@ struct redBlackTreeNode {
 		std::cout << "==>VALUE: " << _value << " <==\n";
 		std::cout << "==>left: " << _left << " right: " << _right << " parent: " << _parent << " <==";
 	}
-
-	node_pointer return_left() { return _left; }
-	node_pointer return_right() { return _right; }
 };
 
 template <typename U>
@@ -76,7 +114,7 @@ public:
 	typedef redBlackTreeNode<value_type>							node;
 	typedef typename allocator_type::template rebind<node>::other	node_allocator;
 	typedef	typename node_allocator::pointer						node_pointer;
-	typedef IteratorTree<value_type>								iterator;
+	typedef IteratorTree<value_type>	iterator;
 private:
 	node_pointer	_root;
 	node_pointer	_nil;
@@ -91,15 +129,22 @@ public:
 		_nil->_right = nullptr;
 		_nil->_left = nullptr;
 		_nil->_red = false;
+		_nil->_nil = true;
 	}
 	~redBlackTree() {
-		//destroy;
-		//deallocate;
+		// destroy_tree(_root);
+		_allocator.deallocate(_nil, 1);
 	}
+
 	size_type size() const { return _size; }
 
-	bool equal_compare(value_type a, value_type b) {
-		return (!_compare(a, b) && !_compare(b, a));
+	void destroy_tree(node_pointer &node) {
+		if (node == _nil)
+			return;
+		destroy_tree(node->_left);
+		destroy_tree(node->_right);
+		_allocator.destroy(node);
+		_allocator.deallocate(node, 1);
 	}
 
 	void insert(const value_type& val) {
@@ -107,7 +152,7 @@ public:
 		_allocator.construct(new_node, _nil, val);
 		if (_nil->_left == nullptr)
 			_nil->_left = new_node;
-		else if (_compare(val, _root->_left->_value))
+		else if (_compare(val, _nil->_left->_value))
 			_nil->_left = new_node;
 		if (_nil->_right == nullptr)
 			_nil->_right = new_node;
@@ -141,9 +186,14 @@ public:
 
 	void erase(const value_type& val) {
 		node_pointer s = search(val);
+		if (s == nullptr) return;
+		if (!_compare(val, _nil->_left->_value) && !_compare(_nil->_left->_value, val))
+			_nil->_left = _nil->_left->increment();
+		if (!_compare(val, _nil->_right->_value) && !_compare(_nil->_right->_value, val))
+			_nil->_right = _nil->_right->dicrement();
 		deleted(s);
 	}
-
+// private:
 	void balanced_after_added(node_pointer& node) {
 		while (node->_parent && node->_parent->_red) {
 			if (node->grandparent() && (node->grandparent())->_left == node->_parent) {
@@ -194,8 +244,11 @@ public:
 			else
 				return tmp;
 		}
-		return (tmp);
+		return (nullptr);
 	}
+
+	iterator begin() { return (_nil->_left); }
+	iterator end() {return (_nil->_right->_right); }
 
 	void transplant(node_pointer &u, node_pointer& v) {
 		if (u->_parent == _nil) {
@@ -208,15 +261,9 @@ public:
 		v->_parent = u->_parent;
 	}
 
-	node_pointer tree_min(node_pointer& node) {
-		node_pointer rez = node;
-		while (rez->_left != _nil)
-			rez = rez->_left;
-		return (rez);
-	}
-
 	void deleted(node_pointer &node) {
 		node_pointer del = node;
+		node_pointer freeNode = del;
 		node_pointer tmp;
 		bool del_red = tmp->_red;
 		if (node->_left == _nil) {
@@ -228,7 +275,7 @@ public:
 			transplant(node, node->_left);
 		}
 		else {
-			del= tree_min(node->_right);
+			del = node->_right->tree_min();
 			del_red = del->_red;
 			tmp = del->_right; 
 			if (del->_parent == node)
@@ -245,6 +292,9 @@ public:
 		}
 		if (!del_red)
 			balanced_after_deleted(tmp);
+		--_size;
+		_allocator.destroy(freeNode);
+		_allocator.deallocate(freeNode, 1);
 	}
 
 	void balanced_after_deleted(node_pointer& node) {
@@ -304,11 +354,6 @@ public:
 			}
 		}
 		node->_red = false;
-	}
-
-	void free_node(node_pointer &node) {
-		_allocator.destroy(node);
-		_allocator.deallocate(node, 1);
 	}
 
 	void rotate_left(node_pointer n) {

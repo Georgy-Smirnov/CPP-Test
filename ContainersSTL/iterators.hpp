@@ -60,7 +60,7 @@ public:
 };
 
 /*********************************************/
-/************* Iterator for map **************/
+/************ Iterator for tree **************/
 /*********************************************/
 
 template <typename U>
@@ -86,10 +86,17 @@ public:
 		_pointer = it._pointer;
 		return *this;
 	}
-	reference operator*() {return *(_pointer->_value); }
+	reference operator*() {return (_pointer->_value); }
 	const reference operator*() const {return *(_pointer->_value); }
 	pointer operator->() {return _pointer->_value; }
-
+	IteratorTree& operator++() { _pointer = _pointer->increment(); return *this; }
+	IteratorTree operator++(int) { IteratorTree copy(*this); _pointer = _pointer->increment(); return copy; }
+	IteratorTree& operator--() { _pointer = _pointer->dicrement(); return *this; }
+	IteratorTree operator--(int) { IteratorTree copy(*this); _pointer = _pointer->dicrement(); return copy; }
+	template <typename T1, typename T2> 
+	friend bool operator==(const IteratorVector<T1>& x, const IteratorVector<T2>& y) { return x._pointer == y._pointer; }
+	template <typename T1, typename T2> 
+	friend bool operator!=(const IteratorVector<T1>& x, const IteratorVector<T2>& y) { return !(x._pointer == y._pointer); }
 };
 
 /*********************************************/
