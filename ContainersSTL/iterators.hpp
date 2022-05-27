@@ -134,10 +134,10 @@ public:
 	ReverseIteratorVector operator++(int) { ReverseIteratorVector copy(*this); --_iter; return copy; }
 	ReverseIteratorVector& operator--() { ++_iter; return *this; }
 	ReverseIteratorVector operator--(int) { ReverseIteratorVector copy(*this); ++_iter; return copy; }
-	ReverseIteratorVector operator+(const difference_type& i) const { return _iter - i; }
+	ReverseIteratorVector operator+(const difference_type& i) const { return ReverseIteratorVector(_iter - i); }
 	ReverseIteratorVector& operator+=(const difference_type& i) const { _iter -= i; return *this; }
 	ReverseIteratorVector& operator-=(const difference_type& i) const { _iter += i; return *this; }
-	ReverseIteratorVector operator-(const difference_type& i) const { return _iter + i; }
+	ReverseIteratorVector operator-(const difference_type& i) const { return ReverseIteratorVector(_iter + i); }
 
 		template <typename T1, typename T2> 
 	friend bool operator==(const ReverseIteratorVector<T1>& x, const ReverseIteratorVector<T2>& y) { return x._pointer == y._pointer; }

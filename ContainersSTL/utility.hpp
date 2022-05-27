@@ -65,7 +65,7 @@ struct is_same <T, T> { static const bool value = true; };
 /**************** enable if ******************/
 /*********************************************/
 
-template <bool conditional, typename Type>
+template <bool conditional, typename Type = void>
 struct enable_if;			
 
 template <typename Type>			
@@ -136,7 +136,7 @@ bool lexicographical_compare(InputIt1 first1, InputIt1 last1, InputIt2 first2, I
 /*********************************************/
 
 template <typename T>
-void swap(T a, T b) {
+void _swap(T &a, T &b) {
 	T tmp;
 	tmp = a;
 	a = b;
