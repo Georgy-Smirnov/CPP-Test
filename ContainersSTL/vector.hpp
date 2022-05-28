@@ -22,8 +22,8 @@ public:
 	typedef typename Allocator::const_pointer	const_pointer;
 	typedef IteratorVector<value_type>			iterator;
 	typedef IteratorVector<const value_type>		const_iterator;
-	typedef ReverseIteratorVector<iterator>		reverse_iterator;
-	typedef ReverseIteratorVector<const_iterator>	const_reverse_iterator;
+	typedef ReverseIterator<iterator>		reverse_iterator;
+	typedef ReverseIterator<const_iterator>	const_reverse_iterator;
 
 private:
 	pointer		_array;
@@ -208,7 +208,7 @@ public:
 	/*********************************************/
 	/***************** Capacity ******************/
 	/*********************************************/
-	bool empty() const { return _size == 0; }
+	bool empty() const { return !_size; }
 
 	size_type size() const { return _size; }
 
@@ -442,23 +442,6 @@ public:
 		_size = _size + count;
 		_array = tmp;
 	}
-
-	// iterator erase(iterator pos) {
-	// 	for (size_t i = pos - this->begin(); i < this->size(); ++i) {
-	// 		try {
-	// 			_allocator.destroy(_array + i);
-	// 			if (i != this->size() - 1)
-	// 				_allocator.construct(_array + i, *(_array + i + 1));
-	// 		}
-	// 		catch(...) {
-	// 			for (size_t j = pos - this->begin(); j < i; ++j)
-	// 				_allocator.destroy(_array + j);
-	// 			throw;
-	// 		}			
-	// 	}
-	// 	--_size;
-	// 	return &(*pos);
-	// }
 
 	iterator erase(iterator pos) {
 		for (size_t i = pos - this->begin(); i < this->size(); ++i) {
