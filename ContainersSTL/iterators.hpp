@@ -71,15 +71,14 @@ public:
 	typedef typename iterator<std::bidirectional_iterator_tag, U>::pointer				pointer;
 	typedef typename iterator<std::bidirectional_iterator_tag, U>::reference			reference;
 	typedef typename iterator<std::bidirectional_iterator_tag, U>::iterator_category	iterator_category;
-	typedef redBlackTreeNode<value_type>												node_type;
-	typedef node_type*																	node_pointer;
+	typedef redBlackTreeNode<typename std::remove_const<value_type>::type>*				node_pointer;
 private:
 	node_pointer _pointer;
 public:
 	IteratorTree() : _pointer(nullptr) {}
-	IteratorTree(node_pointer p) : _pointer(p) {}
+	IteratorTree(const node_pointer& p) : _pointer(p) {}
 	template <typename _U>
-	IteratorTree(const IteratorTree<_U>& it) : _pointer(&(*it)) {}
+	IteratorTree(const IteratorTree<_U>& it) : _pointer(reinterpret_cast<node_pointer>(&(*it))) {}
 	~IteratorTree() {}
 	IteratorTree& operator=(const IteratorTree& it) {
 		if (this == &it) return *this;
@@ -87,16 +86,16 @@ public:
 		return *this;
 	}
 	reference operator*() {return (_pointer->_value); }
-	const reference operator*() const {return *(_pointer->_value); }
+	const reference operator*() const {return (_pointer->_value); }
 	pointer operator->() {return _pointer->_value; }
 	IteratorTree& operator++() { _pointer = _pointer->increment(); return *this; }
 	IteratorTree operator++(int) { IteratorTree copy(*this); _pointer = _pointer->increment(); return copy; }
 	IteratorTree& operator--() { _pointer = _pointer->dicrement(); return *this; }
 	IteratorTree operator--(int) { IteratorTree copy(*this); _pointer = _pointer->dicrement(); return copy; }
 	template <typename T1, typename T2> 
-	friend bool operator==(const IteratorVector<T1>& x, const IteratorVector<T2>& y) { return x._pointer == y._pointer; }
+	friend bool operator==(const IteratorTree<T1>& x, const IteratorTree<T2>& y) { return x._pointer == y._pointer; }
 	template <typename T1, typename T2> 
-	friend bool operator!=(const IteratorVector<T1>& x, const IteratorVector<T2>& y) { return !(x._pointer == y._pointer); }
+	friend bool operator!=(const IteratorTree<T1>& x, const IteratorTree<T2>& y) { return !(x._pointer == y._pointer); }
 };
 
 /*********************************************/
