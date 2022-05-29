@@ -87,7 +87,7 @@ public:
 	}
 	reference operator*() {return (_pointer->_value); }
 	const reference operator*() const {return (_pointer->_value); }
-	pointer operator->() {return _pointer->_value; }
+	pointer operator->() {return &(_pointer->_value); }
 	IteratorTree& operator++() { _pointer = _pointer->increment(); return *this; }
 	IteratorTree operator++(int) { IteratorTree copy(*this); _pointer = _pointer->increment(); return copy; }
 	IteratorTree& operator--() { _pointer = _pointer->dicrement(); return *this; }

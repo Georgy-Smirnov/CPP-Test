@@ -129,22 +129,19 @@ public:
 
 	void clear() { _tree.clear_tree(); }
 
-	// std::pair<iterator, bool> insert(const value_type& value);
+	pair<iterator, bool> insert(const value_type& value) { return (_tree.insert(value)); }
+	iterator insert(iterator hint, const value_type& value) { return (_tree.insert(hint, value)); }
+	template <typename InputIt>
+	void insert( InputIt first, InputIt last ) { return (_tree.insert(first, last)); }
 
-	// iterator insert(iterator hint, const value_type& value);
+	void erase(iterator pos) { return (_tree.erase(pos)); }
+	void erase(iterator first, iterator last) { return (_tree.erase(first, last)); }
+	size_type erase(const key_type& key) { return (_tree.erase(ft::make_pair<key_type, mapped_type>(key, mapped_type()))); }
 
-	// template< class InputIt >
-	// void insert( InputIt first, InputIt last );
-
-	void insert(value_type val) {
-		_tree.insert(val);
+	void swap(map& other) {
+		_swap(_compare, other->_compare);
+		_swap(_tree, other._tree);
 	}
-
-	// void erase( iterator pos );
-	// void erase( iterator first, iterator last );
-	// size_type erase( const Key& key );
-
-	// void swap( map& other );
 
 	/*********************************************/
 	/***************** LookUp ********************/
@@ -166,22 +163,34 @@ public:
 	const_iterator upper_bound(const key_type& key) const { return _tree.upper_bound(ft::make_pair<key_type, mapped_type>(key, mapped_type())); }
 
 
-	// pair<const_iterator,const_iterator> equal_range (const key_type& k) const;
-	// pair<iterator,iterator>             equal_range (const key_type& k);
+	pair<iterator,iterator> equal_range (const key_type& key) { return (ft::make_pair<iterator, iterator>(lower_bound(key), upper_bound(key))); }
+	pair<const_iterator,const_iterator> equal_range (const key_type& key) const { return (ft::make_pair<const_iterator, const_iterator>(lower_bound(key), upper_bound(key))); }
 
 	/*********************************************/
 	/**************** Observers ******************/
 	/*********************************************/	
 
-	//key_comp
-
-	//value_comp	
+	key_compare key_comp () const { return key_compare(); }
+	value_compare value_comp() const { return _compare; }
 
 	/*********************************************/
 	/*********** Non-Member functions ************/
 	/*********************************************/
 
-	//operators == != < > <= >=
+	friend bool operator==(const map& lhs, const map& rhs) {
+		if (lhs.size() != rhs.size())
+			return false;
+		return ft::equal(lhs.begin(), lhs.end(), rhs.begin());
+	}
+	friend bool operator!=(const map& lhs, const map& rhs) { return !(lhs == rhs); }
+	friend bool operator<(const map& lhs, const map& rhs) {
+		return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+	}
+	friend bool operator>(const map& lhs, const map& rhs) { return rhs < lhs; }
+	friend bool operator<=(const map& lhs, const map& rhs) { return !(rhs < lhs); }
+	friend bool operator>=(const map& lhs, const map& rhs) { return !(lhs < rhs); }
+
+	void print_tree() const { _tree.print_tree(); }
 };
 }
 

@@ -381,7 +381,7 @@ public:
 		_array = tmp;
 	}
 
-	template< class InputIt >
+	template <typename InputIt>
 	typename enable_if<!is_integral<InputIt>::value, void>::type
 		insert(iterator pos, InputIt first, InputIt last) {
 		int i = 0;

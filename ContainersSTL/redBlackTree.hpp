@@ -80,7 +80,7 @@ struct redBlackTreeNode {
 		if (node->_nil)
 			return node->_right;
 		if (!node->_left->_nil)
-			return node->_right->tree_max();
+			return node->_left->tree_max();
 		node_pointer prev = node->_parent;
 		while (!prev->_nil && node == prev->_left) {
 			node = prev;
@@ -184,27 +184,79 @@ public:
 		return (_nil);
 	}
 
-	void insert(const value_type& val) {
-		add(val);
+	pair<iterator, bool> insert(const value_type& val) {
+		node_pointer rez = add(val);
+		if (rez == _nil)
+			return (ft::make_pair<iterator, bool>(rez, false));
+		return (ft::make_pair<iterator, bool>(rez, true));
 	}
 
-	void erase(const value_type& val) {
-		node_pointer s = search(val);
+	iterator insert(iterator hint, const value_type& val) {
+		if (hint != _nil) {
+			if (hint == _nil->_left && _compare(val, _nil->_left->_value)) {
+				node_pointer new_node = _allocator.allocate(1);
+				_allocator.construct(new_node, _nil, val);
+				new_node->_parent = _nil->left;
+				new_node->_parent->_left = new_node;
+				balanced_after_added(new_node);
+				++_size;
+				return new_node;
+			}
+			else if (hint == _nil->_right && _compare(_nil->_right->_value, val)) {
+				node_pointer new_node = _allocator.allocate(1);
+				_allocator.construct(new_node, _nil, val);
+				new_node->_parent = _nil->right;
+				new_node->_parent->_right = new_node;
+				balanced_after_added(new_node);
+				++_size;
+				return new_node;
+			}
+		}
+		return add(val);
+	}
+
+	template <typename InputIt>
+	typename enable_if<!is_integral<InputIt>::value, void>::type insert(InputIt first, InputIt last) {
+		for(; first != last; ++first)
+			insert(*first);
+	}
+
+	void erase(iterator pos) {
+		node_pointer s = &(*pos);
 		if (s == _nil) return;
+		if (!_compare(s->_value, _nil->_left->_value) && !_compare(_nil->_left->_value, s->_value))
+			_nil->_left = _nil->_left->increment();
+		if (!_compare(s->_value, _nil->_right->_value) && !_compare(_nil->_right->_value, s->_value))
+			_nil->_right = _nil->_right->dicrement();
+		deleted(s);
+	}
+
+	size_type erase(const value_type& val) {
+		node_pointer s = search(val);
+		if (s == _nil) return 0;
 		if (!_compare(val, _nil->_left->_value) && !_compare(_nil->_left->_value, val))
 			_nil->_left = _nil->_left->increment();
 		if (!_compare(val, _nil->_right->_value) && !_compare(_nil->_right->_value, val))
 			_nil->_right = _nil->_right->dicrement();
 		deleted(s);
+		return (1);
+	}
+
+	void erase(iterator first, iterator last) {
+		for(; first != last; ++first)
+			insert(*first);		
 	}
 
 	void clear_tree() {
 		if (_size != 0) {
 			node_pointer tmp = _nil->_left;
+			node_pointer prev;
 			for (size_t i = 0; i < _size; ++i) {
-				_allocator.destroy(tmp);
-				_allocator.deallocate(tmp, 1);
+				prev = tmp;
 				tmp = tmp->increment();
+				std::cout << (prev->_value).first << " " ;
+				_allocator.destroy(prev);
+				_allocator.deallocate(prev, 1);
 			}
 		}
 	}
@@ -236,7 +288,7 @@ private:
 	/************** ADD in Tree ******************/
 	/*********************************************/
 
-	void add(const value_type& val) {
+	node_pointer add(const value_type& val) {
 		node_pointer new_node = _allocator.allocate(1);
 		_allocator.construct(new_node, _nil, val);
 		if (_nil->_left == _nil)
@@ -263,7 +315,7 @@ private:
 				else {
 					_allocator.destroy(new_node);
 					_allocator.deallocate(new_node, 1);
-					return;
+					return _nil;
 				}
 			}
 			new_node->_parent = prev;
@@ -274,6 +326,7 @@ private:
 		}
 		balanced_after_added(new_node);
 		++_size;
+		return new_node;
 	}
 
 	void balanced_after_added(node_pointer& node) {
