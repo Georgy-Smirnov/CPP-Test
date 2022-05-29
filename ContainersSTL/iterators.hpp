@@ -18,6 +18,7 @@ public:
 	typedef typename iterator<std::random_access_iterator_tag, U>::pointer				pointer;
 	typedef typename iterator<std::random_access_iterator_tag, U>::reference			reference;
 	typedef typename iterator<std::random_access_iterator_tag, U>::iterator_category	iterator_category;
+	typedef pointer																		iterator_type;																
 private:
 	pointer _pointer;
 public:
@@ -33,7 +34,8 @@ public:
 	}
 	reference operator*() {return *_pointer; }
 	const reference operator*() const {return *_pointer; }
-	pointer operator->() {return _pointer; }
+	pointer operator->() { return _pointer; }
+	const pointer operator->() const  { return _pointer; }
 	reference operator[](difference_type i) { return *(_pointer + i); }
 	IteratorVector& operator++() { ++_pointer; return *this; }
 	IteratorVector operator++(int) { IteratorVector copy(*this); ++_pointer; return copy; }
@@ -66,6 +68,7 @@ public:
 template <typename U>
 class IteratorTree : iterator<std::bidirectional_iterator_tag, U> {
 public:
+	typedef U																	iterator_type;
 	typedef typename iterator<std::bidirectional_iterator_tag, U>::value_type			value_type;
 	typedef typename iterator<std::bidirectional_iterator_tag, U>::difference_type		difference_type;
 	typedef typename iterator<std::bidirectional_iterator_tag, U>::pointer				pointer;
@@ -88,10 +91,12 @@ public:
 	reference operator*() {return (_pointer->_value); }
 	const reference operator*() const {return (_pointer->_value); }
 	pointer operator->() {return &(_pointer->_value); }
+	const pointer operator->() const {return &(_pointer->_value); }
 	IteratorTree& operator++() { _pointer = _pointer->increment(); return *this; }
 	IteratorTree operator++(int) { IteratorTree copy(*this); _pointer = _pointer->increment(); return copy; }
 	IteratorTree& operator--() { _pointer = _pointer->dicrement(); return *this; }
 	IteratorTree operator--(int) { IteratorTree copy(*this); _pointer = _pointer->dicrement(); return copy; }
+	operator node_pointer() { return _pointer; }
 	template <typename T1, typename T2> 
 	friend bool operator==(const IteratorTree<T1>& x, const IteratorTree<T2>& y) { return x._pointer == y._pointer; }
 	template <typename T1, typename T2> 
@@ -126,7 +131,7 @@ public:
 		return *this;
 	}
 	Iterator base() const { return _iter; }
-	reference operator*() { return *(_iter - 1); }
+	reference operator*() { return *(_iter); }
 	pointer operator->() { return &(operator*()); }
 	reference operator[](difference_type i) { return *(_iter - i - 1); }
 	ReverseIterator& operator++() { --_iter; return *this; }
@@ -138,7 +143,7 @@ public:
 	ReverseIterator& operator-=(const difference_type& i) const { _iter += i; return *this; }
 	ReverseIterator operator-(const difference_type& i) const { return ReverseIterator(_iter + i); }
 
-		template <typename T1, typename T2> 
+	template <typename T1, typename T2> 
 	friend bool operator==(const ReverseIterator<T1>& x, const ReverseIterator<T2>& y) { return x._pointer == y._pointer; }
 	template <typename T1, typename T2> 
 	friend bool operator!=(const ReverseIterator<T1>& x, const ReverseIterator<T2>& y) { return !(x._pointer == y._pointer); }
@@ -151,7 +156,7 @@ public:
 	template <typename T1, typename T2> 
 	friend bool operator>=(const ReverseIterator<T1>& x, const ReverseIterator<T2>& y) { return !(y._pointer < x._pointer); }
 
-}; // End Reverse Iterator
+};
 
 }
 

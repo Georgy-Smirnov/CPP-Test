@@ -96,6 +96,8 @@ public:
 	}
 
 	mapped_type& operator[](const key_type& key) {
+		if (find(key) == end())
+			return (*(insert(ft::make_pair<key_type, mapped_type>(key, mapped_type())).first)).second;
 		return ((_tree.search(ft::make_pair<key_type, mapped_type>(key, mapped_type())))->_value).second;
 	}
 
@@ -108,10 +110,10 @@ public:
 	iterator end() { return _tree.end(); }
 	const_iterator end() const { return _tree.end(); }
 	
-	reverse_iterator rbegin() { return reverse_iterator(end()); }
-	const_reverse_iterator rbegin() const { return const_reverse_iterator(end()); }
-	reverse_iterator rend() { return reverse_iterator(begin()); }
-	const_reverse_iterator rend() const { return const_reverse_iterator(begin()); }
+	reverse_iterator rbegin() { return reverse_iterator(--end()); }
+	const_reverse_iterator rbegin() const { return const_reverse_iterator(--end()); }
+	reverse_iterator rend() { return reverse_iterator(--begin()); }
+	const_reverse_iterator rend() const { return const_reverse_iterator(--begin()); }
 
 	/*********************************************/
 	/***************** Capacity ******************/
@@ -139,7 +141,7 @@ public:
 	size_type erase(const key_type& key) { return (_tree.erase(ft::make_pair<key_type, mapped_type>(key, mapped_type()))); }
 
 	void swap(map& other) {
-		_swap(_compare, other->_compare);
+		_swap(_compare, other._compare);
 		_swap(_tree, other._tree);
 	}
 

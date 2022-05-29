@@ -30,6 +30,7 @@ struct iterator_traits {
 	typedef typename Iterator::reference			reference;
 	typedef typename Iterator::difference_type		difference_type;
 	typedef typename Iterator::iterator_category		iterator_category;
+	typedef typename Iterator::pointer					iterator_type;
 };
 
 template <typename T>
@@ -92,6 +93,10 @@ struct is_integral				: false_type {};
 template <>
 struct is_integral<bool>		: true_type {};
 template <>
+struct is_integral<unsigned char>		: true_type {};
+template <>
+struct is_integral<signed char>		: true_type {};
+template <>
 struct is_integral<char>		: true_type {};
 template <>
 struct is_integral<char16_t>	: true_type {};
@@ -100,13 +105,21 @@ struct is_integral<char32_t>	: true_type {};
 template <>
 struct is_integral<wchar_t>		: true_type {};
 template <>
-struct is_integral<short>		: true_type {};
+struct is_integral<signed short>		: true_type {};
 template <>
-struct is_integral<int>			: true_type {};
+struct is_integral<unsigned short>		: true_type {};
 template <>
-struct is_integral<long>		: true_type {};
+struct is_integral<signed int>			: true_type {};
 template <>
-struct is_integral<long long>	: true_type {};
+struct is_integral<unsigned int>			: true_type {};
+template <>
+struct is_integral<signed long>		: true_type {};
+template <>
+struct is_integral<unsigned long>		: true_type {};
+template <>
+struct is_integral<signed long long>	: true_type {};
+template <>
+struct is_integral<unsigned long long>	: true_type {};
 
 /*********************************************/
 /***************** compare *******************/
@@ -137,8 +150,7 @@ bool lexicographical_compare(InputIt1 first1, InputIt1 last1, InputIt2 first2, I
 
 template <typename T>
 void _swap(T &a, T &b) {
-	T tmp;
-	tmp = a;
+	T tmp(a);
 	a = b;
 	b = tmp;
 }
