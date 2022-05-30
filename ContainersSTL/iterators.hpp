@@ -13,10 +13,10 @@ namespace ft{
 template <typename U>
 class IteratorVector : iterator<std::random_access_iterator_tag, U> {
 public:
-	typedef typename iterator<std::random_access_iterator_tag, U>::value_type			value_type;
+	typedef typename iterator<std::random_access_iterator_tag, U>::value_type		value_type;
 	typedef typename iterator<std::random_access_iterator_tag, U>::difference_type		difference_type;
-	typedef typename iterator<std::random_access_iterator_tag, U>::pointer				pointer;
-	typedef typename iterator<std::random_access_iterator_tag, U>::reference			reference;
+	typedef typename iterator<std::random_access_iterator_tag, U>::pointer			pointer;
+	typedef typename iterator<std::random_access_iterator_tag, U>::reference		reference;
 	typedef typename iterator<std::random_access_iterator_tag, U>::iterator_category	iterator_category;
 	typedef pointer																		iterator_type;																
 private:
@@ -68,13 +68,13 @@ public:
 template <typename U>
 class IteratorTree : iterator<std::bidirectional_iterator_tag, U> {
 public:
-	typedef U																	iterator_type;
-	typedef typename iterator<std::bidirectional_iterator_tag, U>::value_type			value_type;
+	typedef U										iterator_type;
+	typedef typename iterator<std::bidirectional_iterator_tag, U>::value_type		value_type;
 	typedef typename iterator<std::bidirectional_iterator_tag, U>::difference_type		difference_type;
-	typedef typename iterator<std::bidirectional_iterator_tag, U>::pointer				pointer;
-	typedef typename iterator<std::bidirectional_iterator_tag, U>::reference			reference;
+	typedef typename iterator<std::bidirectional_iterator_tag, U>::pointer			pointer;
+	typedef typename iterator<std::bidirectional_iterator_tag, U>::reference		reference;
 	typedef typename iterator<std::bidirectional_iterator_tag, U>::iterator_category	iterator_category;
-	typedef redBlackTreeNode<typename std::remove_const<value_type>::type>*				node_pointer;
+	typedef redBlackTreeNode<typename std::remove_const<value_type>::type>*			node_pointer;
 private:
 	node_pointer _pointer;
 public:
@@ -110,11 +110,11 @@ public:
 template <typename Iterator>
 class ReverseIterator {
 public:
-	typedef Iterator												iterator_type;
-	typedef typename iterator_traits<Iterator>::value_type			value_type;
-	typedef typename iterator_traits<Iterator>::pointer				pointer;
-	typedef typename iterator_traits<Iterator>::reference			reference;
-	typedef typename iterator_traits<Iterator>::difference_type		difference_type;
+	typedef Iterator						iterator_type;
+	typedef typename iterator_traits<Iterator>::value_type		value_type;
+	typedef typename iterator_traits<Iterator>::pointer		pointer;
+	typedef typename iterator_traits<Iterator>::reference		reference;
+	typedef typename iterator_traits<Iterator>::difference_type	difference_type;
 	typedef typename iterator_traits<Iterator>::iterator_category	iterator_category;
 private:
 	Iterator _iter;
