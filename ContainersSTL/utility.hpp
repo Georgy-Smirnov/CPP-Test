@@ -145,17 +145,6 @@ bool lexicographical_compare(InputIt1 first1, InputIt1 last1, InputIt2 first2, I
 }
 
 /*********************************************/
-/******************* swap ********************/
-/*********************************************/
-
-template <typename T>
-void _swap(T &a, T &b) {
-	T tmp(a);
-	a = b;
-	b = tmp;
-}
-
-/*********************************************/
 /******************* pair ********************/
 /*********************************************/
 
@@ -214,6 +203,27 @@ bool operator<=(const ft::pair<T1, T2>& x, const ft::pair<T1, T2>& y) {
 	return !(y < x);
 }
 
-} // namespace ft
+template <typename T, typename Allocator> class vector;
+template <class Key, class T, class Compare, class Allocator> class map;
+template <class Key, class Compare, class Allocator> class set;
+}
+
+namespace std {
+	template <class T, class A>
+	void swap(ft::vector<T, A> &v1, ft::vector<T, A> &v2 ) {
+		v1.swap(v2);
+	}
+
+	template <class K, class T, class C, class A>
+	void swap(ft::map<K, T, C, A> &v1, ft::map<K, T, C, A> &v2 ) {
+		v1.swap(v2);
+	}
+
+	template <class K, class C, class A>
+	void swap(ft::set<K, C, A> &v1, ft::set<K, C, A> &v2 ) {
+		v1.swap(v2);
+	}
+	
+}
 
 #endif

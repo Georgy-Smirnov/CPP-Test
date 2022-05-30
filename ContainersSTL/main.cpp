@@ -1,52 +1,33 @@
-#include "stack.hpp"
-#include <iterator>
-#include <vector>
-#include <map>
-#include "map.hpp"
 #include "vector.hpp"
+#include <vector>
+#include "map.hpp"
+#include <map>
+#include "set.hpp"
+#include <set>
+#include <chrono>
+#include <fstream>
+#include <sys/stat.h>
 
-template <typename T>
-void printv(T x, T y) {
-	std::cout << "print vector: {";
-	while (x != y) {
-		std::cout << *x << " ";
-		++x;
-	}
-	std::cout << "}\n";
-}
-
-template <class T, class V>
-std::vector<int> erase_test_3(std::map<T, V> mp) {
-    std::vector<int> v;
-    for (int i = 0, j = 0; i < 500 * 10000; ++i, ++j)
-        mp.insert(std::make_pair(i, j));
-    mp.erase(mp.begin(), --mp.end());
-    v.push_back(mp.begin()->first);
-    return v;
-}
-
-template <class T, class V>
-std::vector<int> erase_test_3(ft::map<T, V> mp) {
-    std::vector<int> v;
-    for (int i = 0, j = 0; i < 500 * 10000; ++i, ++j)
-        mp.insert(ft::make_pair(i, j));
-    mp.erase(mp.begin(), --mp.end());
-    v.push_back(mp.begin()->first);
-    return v;
-}
-
-void f() {
-	// std::map<int, int> smp;
-	// std::vector<int> v = erase_test_3(smp);
-	// printv<std::vector<int>::iterator>(v.begin(), v.end());
-
-	ft::map<int, int> mp;
-	std::vector<int> v1 = erase_test_3(mp);
-	printv<std::vector<int>::iterator>(v1.begin(), v1.end());
-}
+void test_vector(std::ofstream &f, std::ofstream &s);
+void test_map(std::ofstream &f, std::ofstream &s);
 
 int main()
 {
-	f();
-	// while(1);
+	std::ofstream ft_file;
+	std::ofstream std_file;
+	system("rm -rf ./logs");
+	mkdir("./logs", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+	mkdir("./logs/vector", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+	mkdir("./logs/map", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+	mkdir("./logs/set", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+	mkdir("./logs/stack", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+	test_vector(ft_file, std_file);
+	std::cout << std::endl;
+	test_map(ft_file, std_file);
+	// if (system("diff ./logs/fft_at.log ./logs/std_at.log") == 0)
+	// 	std::cout << "\033[32m[OK] \033[m";
+	// else
+	// 	std::cout << "\033[31m[KO] \033[m";
+	// if(system("diff a b") == 0)
+	// std::cout << std::flush;
 }

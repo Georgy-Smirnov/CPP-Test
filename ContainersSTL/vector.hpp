@@ -145,7 +145,7 @@ public:
 	
 	template< class InputIt >
 	void assign(InputIt first, typename enable_if<!is_integral<InputIt>::value, InputIt>::type last) {
-		int tmp = last - first;
+		unsigned int tmp = last - first;
 		reserve(tmp);
 		size_t i = 0;
 		while (i < tmp) {
@@ -274,7 +274,7 @@ public:
 			return pos;
 		}
 		else {
-			int count = pos - this->begin();
+			unsigned int count = pos - this->begin();
 			pointer tmp = _allocator.allocate(_capacity * 2);
 			for (size_t i = 0; i < count; ++i) {
 				try {
@@ -304,7 +304,7 @@ public:
 				_allocator.construct(tmp + count, value);
 			}
 			catch (...) {
-				for (size_t i = this->size(); i > count; --i)
+				for (size_t i = _size; i > count; --i)
 					_allocator.destroy(tmp + i);
 				count = pos - this->begin();
 				for (size_t i = 0; i < count; ++i)
@@ -323,7 +323,7 @@ public:
 	}
 
 	void insert(iterator pos, size_type count, const T& value) {
-		int i = 0;
+		unsigned int i = 0;
 		pointer tmp = nullptr;
 		size_type tmp_count = count;
 		size_type new_capacity;
@@ -334,7 +334,7 @@ public:
 		else
 			new_capacity = _size + count;
 		tmp = _allocator.allocate(new_capacity);
-		int index = pos - this->begin();
+		unsigned int index = pos - this->begin();
 		while (i < index) {
 			try {
 				_allocator.construct(tmp + i, *(_array + i));
@@ -384,7 +384,7 @@ public:
 	template <typename InputIt>
 	typename enable_if<!is_integral<InputIt>::value, void>::type
 		insert(iterator pos, InputIt first, InputIt last) {
-		int i = 0;
+		unsigned int i = 0;
 		pointer tmp = nullptr;
 		size_type count = last - first;
 		size_type tmp_count = 0;
@@ -396,7 +396,7 @@ public:
 		else
 			new_capacity = _size + count;
 		tmp = _allocator.allocate(new_capacity);
-		int index = pos - this->begin();
+		unsigned int index = pos - this->begin();
 		while (i < index) {
 			try {
 				_allocator.construct(tmp + i, *(_array + i));
@@ -444,13 +444,13 @@ public:
 	}
 
 	iterator erase(iterator pos) {
-		for (size_t i = pos - this->begin(); i < this->size(); ++i) {
+		for (size_t i = pos - this->begin(); i < _size - 1; ++i) {
 			try {
 				_allocator.destroy(_array + i);
-				if (i != this->size() - 1)
-					_allocator.construct(_array + i, *(_array + i + 1));
+				_allocator.construct(_array + i, *(_array + i + 1));
 			}
 			catch(...) {
+				std::cout << "LOL\n";
 				for (size_t j = pos - this->begin(); j < i; ++j)
 					_allocator.destroy(_array + j);
 				throw;
@@ -460,7 +460,7 @@ public:
 		return &(*pos);
 	}
 
-	iterator erase( iterator first, iterator last ) {
+	iterator erase(iterator first, iterator last) {
 		size_type count = last - first;
 		for (size_t i = first - this->begin(); i < last - this->begin(); ++i) {
 			_allocator.destroy(_array + i);
@@ -517,10 +517,10 @@ public:
 	}
 
 	void swap(vector& other) {
-		_swap(_array, other._array);
-		_swap(_size, other._size);
-		_swap(_capacity, other._capacity);
-		_swap(_allocator, other._allocator);
+		std::swap(_array, other._array);
+		std::swap(_size, other._size);
+		std::swap(_capacity, other._capacity);
+		std::swap(_allocator, other._allocator);
 	}
 
 	/*********************************************/

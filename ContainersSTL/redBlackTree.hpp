@@ -244,10 +244,14 @@ public:
 
 	void erase(iterator first, iterator last) {
 		if (_size == 0) return;
-		for(iterator tmp = first; tmp != last; ++tmp)
+		iterator tmp = first;
+		++first;
+		for(; first != last; ++first)
 		{
-			erase(tmp);		
+			erase(tmp);	
+			tmp = first;
 		}
+		erase(tmp);
 	}
 
 	void clear_tree() {
