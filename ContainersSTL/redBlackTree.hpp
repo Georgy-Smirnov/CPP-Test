@@ -7,14 +7,15 @@ namespace ft {
 
 template <typename T>
 struct redBlackTreeNode {
-	typedef T					value_type;
+	typedef T			value_type;
 	typedef redBlackTreeNode*	node_pointer;
-	value_type		_value;
+	
+	value_type	_value;
 	node_pointer 	_left;
 	node_pointer 	_right;
 	node_pointer 	_parent;
-	bool			_red;
-	bool			_nil;
+	bool		_red;
+	bool		_nil;
 
 	explicit redBlackTreeNode(node_pointer& nil, const value_type &val = value_type())
 		: _value(val), _left(nil), _right(nil), _parent(nullptr), _red(true), _nil(false) {}
@@ -109,21 +110,21 @@ class IteratorTree;
 template <typename Value, typename Compare = std::less<Value>, typename Allocator = std::allocator<Value> >
 class redBlackTree {
 public:
-	typedef std::size_t												size_type;
-	typedef Value													value_type;
-	typedef Compare													value_compare;
-	typedef Allocator												allocator_type;
-	typedef redBlackTreeNode<value_type>							node;
+	typedef std::size_t						size_type;
+	typedef Value							value_type;
+	typedef Compare							value_compare;
+	typedef Allocator						allocator_type;
+	typedef redBlackTreeNode<value_type>				node;
 	typedef typename allocator_type::template rebind<node>::other	node_allocator;
-	typedef	typename node_allocator::pointer						node_pointer;
-	typedef IteratorTree<value_type>	iterator;
-	typedef IteratorTree<const value_type>	const_iterator;
+	typedef	typename node_allocator::pointer			node_pointer;
+	typedef IteratorTree<value_type>				iterator;
+	typedef IteratorTree<const value_type>				const_iterator;
 private:
 	node_allocator	_allocator;	
 	value_compare	_compare;
 	node_pointer	_root;
 	node_pointer	_nil;
-	size_type		_size;
+	size_type	_size;
 public:
 	/*********************************************/
 	/************ Constr and destr ***************/
