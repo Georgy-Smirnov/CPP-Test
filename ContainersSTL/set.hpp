@@ -10,21 +10,21 @@ namespace ft {
 template <class Key, class Compare = std::less<Key>, class Allocator = std::allocator<Key> >
 class set {
 public:
-	typedef Key												key_type;
-	typedef Key												value_type;
-	typedef std::size_t										size_type;
-	typedef std::ptrdiff_t									difference_type;
-	typedef Compare											key_compare;
-	typedef Compare											value_compare;
-	typedef Allocator										allocator_type;
-	typedef value_type&										reference;
-	typedef const value_type&								const_reference;
-	typedef typename Allocator::pointer						pointer;
-	typedef typename Allocator::const_pointer				const_pointer;
-	typedef IteratorTree<value_type>						iterator;
-	typedef IteratorTree<const value_type>					const_iterator;
-	typedef ReverseIterator<iterator>						reverse_iterator;
-	typedef ReverseIterator<const_iterator>					const_reverse_iterator;
+	typedef Key					key_type;
+	typedef Key					value_type;
+	typedef std::size_t				size_type;
+	typedef std::ptrdiff_t				difference_type;
+	typedef Compare					key_compare;
+	typedef Compare					value_compare;
+	typedef Allocator				allocator_type;
+	typedef value_type&				reference;
+	typedef const value_type&			const_reference;
+	typedef typename Allocator::pointer		pointer;
+	typedef typename Allocator::const_pointer	const_pointer;
+	typedef IteratorTree<value_type>		iterator;
+	typedef IteratorTree<const value_type>		const_iterator;
+	typedef ReverseIterator<iterator>		reverse_iterator;
+	typedef ReverseIterator<const_iterator>		const_reverse_iterator;
 private:
 	typedef redBlackTree<value_type, value_compare, allocator_type> tree;
 
@@ -43,9 +43,8 @@ public:
 	set(InputIt first, typename enable_if<!is_integral<InputIt>::value, InputIt>::type last, const Compare& comp = Compare(), const Allocator& alloc = Allocator()) : _compare(comp), _tree(_compare) {
 		(void)comp;
 		(void)alloc;
-		for (InputIt i = first; i != last; ++i) {
+		for (InputIt i = first; i != last; ++i)
 			_tree.insert(*i);
-		}
 	}
 
 	set(const set& other) : _compare(other._compare), _tree(other._tree) {}
