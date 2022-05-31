@@ -144,17 +144,17 @@ public:
 	ReverseIterator operator-(const difference_type& i) const { return ReverseIterator(_iter + i); }
 
 	template <typename T1, typename T2> 
-	friend bool operator==(const ReverseIterator<T1>& x, const ReverseIterator<T2>& y) { return x._pointer == y._pointer; }
+	friend bool operator==(const ReverseIterator<T1>& x, const ReverseIterator<T2>& y) { return x._iter == y._iter; }
 	template <typename T1, typename T2> 
-	friend bool operator!=(const ReverseIterator<T1>& x, const ReverseIterator<T2>& y) { return !(x._pointer == y._pointer); }
+	friend bool operator!=(const ReverseIterator<T1>& x, const ReverseIterator<T2>& y) { return !(x._iter == y._iter); }
 	template <typename T1, typename T2> 
-	friend bool operator<(const ReverseIterator<T1>& x, const ReverseIterator<T2>& y) { return y._pointer < x._pointer; }
+	friend bool operator<(const ReverseIterator<T1>& x, const ReverseIterator<T2>& y) { return y._iter < x._iter; }
 	template <typename T1, typename T2> 
-	friend bool operator>(const ReverseIterator<T1>& x, const ReverseIterator<T2>& y) { return x._pointer < y._pointer; }
+	friend bool operator>(const ReverseIterator<T1>& x, const ReverseIterator<T2>& y) { return x._iter < y._iter; }
 	template <typename T1, typename T2> 
-	friend bool operator<=(const ReverseIterator<T1>& x, const ReverseIterator<T2>& y) { return !(x._pointer < y._pointer); }
+	friend bool operator<=(const ReverseIterator<T1>& x, const ReverseIterator<T2>& y) { return !(x._iter < y._iter); }
 	template <typename T1, typename T2> 
-	friend bool operator>=(const ReverseIterator<T1>& x, const ReverseIterator<T2>& y) { return !(y._pointer < x._pointer); }
+	friend bool operator>=(const ReverseIterator<T1>& x, const ReverseIterator<T2>& y) { return !(y._iter < x._iter); }
 
 };
 

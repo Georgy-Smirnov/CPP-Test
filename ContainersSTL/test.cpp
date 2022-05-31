@@ -3872,5 +3872,5 @@ void start_test() {
 int main()
 {
 	start_test();
-	while(1);
+	// while(1);
 }
