@@ -31,7 +31,7 @@ struct iterator_traits {
 	typedef typename Iterator::difference_type	difference_type;
 	typedef typename Iterator::iterator_category	iterator_category;
 	typedef typename Iterator::pointer		iterator_type;
-}
+};
 
 template <typename T>
 struct iterator_traits<T*> {

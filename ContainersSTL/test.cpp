@@ -14,6 +14,7 @@
 /******************************************************************************/
 /*************************** vector test **************************************/
 /******************************************************************************/
+namespace vec{
 
 size_t std_construct_1(std::ofstream& f) {
 	std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
@@ -1078,10 +1079,328 @@ void test_vector(std::ofstream& f, std::ofstream& s) {
 	std::cout << ((system(&command[0]) == 0) ? "\033[32m[OK] \033[m" : "\033[31m[KO] \033[m") << std::endl;
 	std::cout << "\033[33m********************************************************************\033[m\n";
 }
+}
 
 /******************************************************************************/
 /***************************** map test ***************************************/
 /******************************************************************************/
+namespace map {
+
+void std_put_map(std::map<int, int> &m) {
+	m.insert(std::make_pair<int, int>(10, 12));
+	m.insert(std::make_pair<int, int>(11, 1234));
+	m.insert(std::make_pair<int, int>(112, 212));
+	m.insert(std::make_pair<int, int>(435, 2));
+	m.insert(std::make_pair<int, int>(21, 154));
+	m.insert(std::make_pair<int, int>(42, 192));
+	m.insert(std::make_pair<int, int>(1, 912));
+
+}
+
+void ft_put_map(ft::map<int, int> &m) {
+	m.insert(ft::make_pair<int, int>(10, 12));
+	m.insert(ft::make_pair<int, int>(11, 1234));
+	m.insert(ft::make_pair<int, int>(112, 212));
+	m.insert(ft::make_pair<int, int>(435, 2));
+	m.insert(ft::make_pair<int, int>(21, 154));
+	m.insert(ft::make_pair<int, int>(42, 192));
+	m.insert(ft::make_pair<int, int>(1, 912));
+
+}
+
+size_t std_constr_1(std::ofstream& f) {
+	std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
+	std::map<int, int> vi;
+	std::map<std::string, std::string> vs;
+	std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
+	f << vi.size() << " " << vs.size();
+	return std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+}
+
+size_t ft_constr_1(std::ofstream& f) {
+	std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
+	ft::map<int, int> vi;
+	ft::map<std::string, std::string> vs;
+	std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
+	f << vi.size() << " " << vs.size();
+	return std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+}
+
+size_t std_constr_2(std::ofstream& f) {
+	std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
+	const std::plus<int> i;
+	std::map<int, int, std::plus<int> > vi(i);
+	std::map<std::string, std::string, std::plus<int> > vs(i);
+	std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
+	f << vi.size() << " " << vs.size();
+	return std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+}
+
+size_t ft_constr_2(std::ofstream& f) {
+	std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
+	const std::plus<int> i;
+	ft::map<int, int, std::plus<int> > vi(i);
+	ft::map<std::string, std::string, std::plus<int> > vs(i);
+	std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
+	f << vi.size() << " " << vs.size();
+	return std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+}
+
+size_t std_constr_3(std::ofstream& f) {
+	std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
+	std::map<int, int> vi;
+	std_put_map(vi);
+	std::map<int, int> vs(vi.begin(), --vi.end());
+	std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
+	f << vi.size() << " " << vs.size() << " " << vi[1] << vs[1];
+	return std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+}
+
+size_t ft_constr_3(std::ofstream& f) {
+	std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
+	ft::map<int, int> vi;
+	ft_put_map(vi);
+	ft::map<int, int> vs(vi.begin(), --vi.end());
+	std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
+	f << vi.size() << " " << vs.size() << " " << vi[1] << vs[1];
+	return std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+}
+
+size_t std_constr_4(std::ofstream& f) {
+	std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
+	std::map<int, int> vi;
+	std_put_map(vi);
+	std::map<int, int> vs(vi);
+	std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
+	f << vi.size() << " " << vs.size() << " " << vi[1] << vs[1];
+	return std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+}
+
+size_t ft_constr_4(std::ofstream& f) {
+	std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
+	ft::map<int, int> vi;
+	ft_put_map(vi);
+	ft::map<int, int> vs(vi);
+	std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
+	f << vi.size() << " " << vs.size() << " " << vi[1] << vs[1];
+	return std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+}
+
+size_t std_operator_eq(std::ofstream& f) {
+	std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
+	std::map<int, int> vi;
+	std_put_map(vi);
+	std::map<int, int> vs;
+	vs = vi;
+	std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
+	f << vi.size() << " " << vs.size() << " " << vi[1] << vs[1];
+	return std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+}
+
+size_t ft_operator_eq(std::ofstream& f) {
+	std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
+	ft::map<int, int> vi;
+	ft_put_map(vi);
+	ft::map<int, int> vs;
+	vs = vi;
+	std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
+	f << vi.size() << " " << vs.size() << " " << vi[1] << vs[1];
+	return std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+}
+
+size_t ft_at(std::ofstream& f) {
+	std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
+	ft::map<int, int> vi;
+	ft_put_map(vi);
+	vi.at(1) = 5;
+	try { vi.at(0); }
+	catch (...) {}
+	std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
+	f << vi.size() << " " << vi.at(1);
+	return std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+}
+
+size_t std_at(std::ofstream& f) {
+	std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
+	std::map<int, int> vi;
+	std_put_map(vi);
+	vi.at(1) = 5;
+	try { vi.at(0); }
+	catch (...) {}
+	std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
+	f << vi.size() << " " << vi.at(1);
+	return std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+}
+
+size_t ft_sq(std::ofstream& f) {
+	std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
+	ft::map<int, int> vi;
+	ft_put_map(vi);
+	vi[1] = 9;
+	std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
+	f << vi.size() << " " << vi[1];
+	return std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+}
+
+size_t std_sq(std::ofstream& f) {
+	std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
+	std::map<int, int> vi;
+	std_put_map(vi);
+	vi[1] = 9;
+	std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
+	f << vi.size() << " " << vi[1];
+	return std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+}
+
+size_t ft_begin(std::ofstream& f) {
+	std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
+	ft::map<int, int> vi;
+	ft_put_map(vi);
+	ft::map<int, int>::iterator it = vi.begin();
+	ft::map<int, int>::const_iterator cit = vi.begin();
+	std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
+	f << vi.size() << " " << it->second << " " << cit->second;
+	return std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+}
+
+size_t std_begin(std::ofstream& f) {
+	std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
+	std::map<int, int> vi;
+	std_put_map(vi);
+	std::map<int, int>::iterator it = vi.begin();
+	std::map<int, int>::const_iterator cit = vi.begin();
+	std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
+	f << vi.size() << " " << it->second << " " << cit->second;
+	return std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+}
+
+size_t ft_end(std::ofstream& f) {
+	std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
+	ft::map<int, int> vi;
+	ft_put_map(vi);
+	ft::map<int, int>::iterator it = --vi.end();
+	ft::map<int, int>::const_iterator cit = --vi.end();
+	std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
+	f << vi.size() << " " << it->second << " " << cit->second;
+	return std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+}
+
+size_t std_end(std::ofstream& f) {
+	std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
+	std::map<int, int> vi;
+	std_put_map(vi);
+	std::map<int, int>::iterator it = --vi.end();
+	std::map<int, int>::const_iterator cit = --vi.end();
+	std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
+	f << vi.size() << " " << it->second << " " << cit->second;
+	return std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+}
+
+size_t ft_rbegin(std::ofstream& f) {
+	std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
+	ft::map<int, int> vi;
+	ft_put_map(vi);
+	ft::map<int, int>::reverse_iterator it = vi.rbegin();
+	ft::map<int, int>::const_reverse_iterator cit = vi.rbegin();
+	std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
+	f << vi.size() << " " << it->second << " " << cit->second;
+	return std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+}
+
+size_t std_rbegin(std::ofstream& f) {
+	std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
+	std::map<int, int> vi;
+	std_put_map(vi);
+	std::map<int, int>::reverse_iterator it = vi.rbegin();
+	std::map<int, int>::const_reverse_iterator cit = vi.rbegin();
+	std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
+	f << vi.size() << " " << it->second << " " << cit->second;
+	return std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+}
+
+size_t ft_rend(std::ofstream& f) {
+	std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
+	ft::map<int, int> vi;
+	ft_put_map(vi);
+	ft::map<int, int>::reverse_iterator it = --vi.rend();
+	ft::map<int, int>::const_reverse_iterator cit = --vi.rend();
+	std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
+	f << vi.size() << " " << it->second << " " << cit->second;
+	return std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+}
+
+size_t std_rend(std::ofstream& f) {
+	std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
+	std::map<int, int> vi;
+	std_put_map(vi);
+	std::map<int, int>::reverse_iterator it = --vi.rend();
+	std::map<int, int>::const_reverse_iterator cit = --vi.rend();
+	std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
+	f << vi.size() << " " << it->second << " " << cit->second;
+	return std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+}
+
+size_t ft_empty(std::ofstream& f) {
+	std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
+	ft::map<int, int> vi;
+	ft_put_map(vi);
+	ft::map<int, int> vii;
+	std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
+	f << vi.size() << " " << vi.empty() << " " << vii.empty();
+	return std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+}
+
+size_t std_empty(std::ofstream& f) {
+	std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
+	std::map<int, int> vi;
+	std_put_map(vi);
+	std::map<int, int> vii;
+	std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
+	f << vi.size() << " " << vi.empty() << " " << vii.empty();
+	return std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+}
+
+size_t ft_size(std::ofstream& f) {
+	std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
+	ft::map<int, int> vi;
+	ft_put_map(vi);
+	ft::map<int, int> vii;
+	std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
+	f << vi.size() << " " <<  vii.size();
+	return std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+}
+
+size_t std_size(std::ofstream& f) {
+	std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
+	std::map<int, int> vi;
+	std_put_map(vi);
+	std::map<int, int> vii;
+	std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
+	f << vi.size()  << " " << vii.size();
+	return std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+}
+
+size_t ft_clear(std::ofstream& f) {
+	std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
+	ft::map<int, int> vi;
+	ft_put_map(vi);
+	int i = vi.size();
+	vi.clear();
+	std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
+	f << vi.size() << " " <<  i << " " << vi.size();
+	return std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+}
+
+size_t std_clear(std::ofstream& f) {
+	std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
+	std::map<int, int> vi;
+	std_put_map(vi);
+	int i = vi.size();
+	vi.clear();
+	std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
+	f << vi.size() << " " <<  i << " " << vi.size();
+	return std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+}
 
 void test_map(std::ofstream& f, std::ofstream& s) {
 	std::string ffirst = "./logs/map/ft_";
@@ -1093,5 +1412,153 @@ void test_map(std::ofstream& f, std::ofstream& s) {
 	std::cout << "\033[33m********************************************************************\n" << "*                                map                               *\n" << "********************************************************************\n";
 	std::cout << "\033[m\033[34mMember:\t\t\tTime std\t\tTime ft\t\tdiff\033[m\n";
 
+	name = "constructor_1.log";
+	f.open(ffirst + name);
+	s.open(sfirst + name);
+	std::cout << "Constructor()\t\t" << std_constr_1(f) << "\t\t\t" << ft_constr_1(s) << "\t\t";
+	f.close();
+	s.close();
+	command = ((const_cast<char*>("diff ")) + ffirst + name + (const_cast<char*>(" ")) + sfirst + name);
+	std::cout << ((system(&command[0]) == 0) ? "\033[32m[OK] \033[m" : "\033[31m[KO] \033[m") << std::endl;
 
+	name = "constructor_2.log";
+	f.open(ffirst + name);
+	s.open(sfirst + name);
+	std::cout << "Constructor(comp)\t" << std_constr_2(f) << "\t\t\t" << ft_constr_2(s) << "\t\t";
+	f.close();
+	s.close();
+	command = ((const_cast<char*>("diff ")) + ffirst + name + (const_cast<char*>(" ")) + sfirst + name);
+	std::cout << ((system(&command[0]) == 0) ? "\033[32m[OK] \033[m" : "\033[31m[KO] \033[m") << std::endl;
+
+	name = "constructor_3.log";
+	f.open(ffirst + name);
+	s.open(sfirst + name);
+	std::cout << "Constructor(iterator)\t" << std_constr_3(f) << "\t\t\t" << ft_constr_3(s) << "\t\t";
+	f.close();
+	s.close();
+	command = ((const_cast<char*>("diff ")) + ffirst + name + (const_cast<char*>(" ")) + sfirst + name);
+	std::cout << ((system(&command[0]) == 0) ? "\033[32m[OK] \033[m" : "\033[31m[KO] \033[m") << std::endl;
+
+	name = "constructor_4.log";
+	f.open(ffirst + name);
+	s.open(sfirst + name);
+	std::cout << "Constructor(copy)\t" << std_constr_4(f) << "\t\t\t" << ft_constr_4(s) << "\t\t";
+	f.close();
+	s.close();
+	command = ((const_cast<char*>("diff ")) + ffirst + name + (const_cast<char*>(" ")) + sfirst + name);
+	std::cout << ((system(&command[0]) == 0) ? "\033[32m[OK] \033[m" : "\033[31m[KO] \033[m") << std::endl;
+
+	name = "operator_eq.log";
+	f.open(ffirst + name);
+	s.open(sfirst + name);
+	std::cout << "Operator=\t\t" << std_operator_eq(f) << "\t\t\t" << ft_operator_eq(s) << "\t\t";
+	f.close();
+	s.close();
+	command = ((const_cast<char*>("diff ")) + ffirst + name + (const_cast<char*>(" ")) + sfirst + name);
+	std::cout << ((system(&command[0]) == 0) ? "\033[32m[OK] \033[m" : "\033[31m[KO] \033[m") << std::endl;
+
+	name = "at.log";
+	f.open(ffirst + name);
+	s.open(sfirst + name);
+	std::cout << "At\t\t\t" << std_at(f) << "\t\t\t" << ft_at(s) << "\t\t";
+	f.close();
+	s.close();
+	command = ((const_cast<char*>("diff ")) + ffirst + name + (const_cast<char*>(" ")) + sfirst + name);
+	std::cout << ((system(&command[0]) == 0) ? "\033[32m[OK] \033[m" : "\033[31m[KO] \033[m") << std::endl;
+
+	name = "operator[].log";
+	f.open(ffirst + name);
+	s.open(sfirst + name);
+	std::cout << "Operator[]\t\t" << std_sq(f) << "\t\t\t" << ft_sq(s) << "\t\t";
+	f.close();
+	s.close();
+	command = ((const_cast<char*>("diff ")) + ffirst + name + (const_cast<char*>(" ")) + sfirst + name);
+	std::cout << ((system(&command[0]) == 0) ? "\033[32m[OK] \033[m" : "\033[31m[KO] \033[m") << std::endl;
+
+	name = "begin.log";
+	f.open(ffirst + name);
+	s.open(sfirst + name);
+	std::cout << "Begin\t\t\t" << std_begin(f) << "\t\t\t" << ft_begin(s) << "\t\t";
+	f.close();
+	s.close();
+	command = ((const_cast<char*>("diff ")) + ffirst + name + (const_cast<char*>(" ")) + sfirst + name);
+	std::cout << ((system(&command[0]) == 0) ? "\033[32m[OK] \033[m" : "\033[31m[KO] \033[m") << std::endl;
+
+	name = "end.log";
+	f.open(ffirst + name);
+	s.open(sfirst + name);
+	std::cout << "End\t\t\t" << std_end(f) << "\t\t\t" << ft_end(s) << "\t\t";
+	f.close();
+	s.close();
+	command = ((const_cast<char*>("diff ")) + ffirst + name + (const_cast<char*>(" ")) + sfirst + name);
+	std::cout << ((system(&command[0]) == 0) ? "\033[32m[OK] \033[m" : "\033[31m[KO] \033[m") << std::endl;
+
+	name = "rbegin.log";
+	f.open(ffirst + name);
+	s.open(sfirst + name);
+	std::cout << "Rbegin\t\t\t" << std_rbegin(f) << "\t\t\t" << ft_rbegin(s) << "\t\t";
+	f.close();
+	s.close();
+	command = ((const_cast<char*>("diff ")) + ffirst + name + (const_cast<char*>(" ")) + sfirst + name);
+	std::cout << ((system(&command[0]) == 0) ? "\033[32m[OK] \033[m" : "\033[31m[KO] \033[m") << std::endl;
+
+	name = "rend.log";
+	f.open(ffirst + name);
+	s.open(sfirst + name);
+	std::cout << "Rend\t\t\t" << std_rend(f) << "\t\t\t" << ft_rend(s) << "\t\t";
+	f.close();
+	s.close();
+	command = ((const_cast<char*>("diff ")) + ffirst + name + (const_cast<char*>(" ")) + sfirst + name);
+	std::cout << ((system(&command[0]) == 0) ? "\033[32m[OK] \033[m" : "\033[31m[KO] \033[m") << std::endl;
+
+	name = "empty.log";
+	f.open(ffirst + name);
+	s.open(sfirst + name);
+	std::cout << "Empyty\t\t\t" << std_empty(f) << "\t\t\t" << ft_empty(s) << "\t\t";
+	f.close();
+	s.close();
+	command = ((const_cast<char*>("diff ")) + ffirst + name + (const_cast<char*>(" ")) + sfirst + name);
+	std::cout << ((system(&command[0]) == 0) ? "\033[32m[OK] \033[m" : "\033[31m[KO] \033[m") << std::endl;
+
+	name = "size.log";
+	f.open(ffirst + name);
+	s.open(sfirst + name);
+	std::cout << "Size\t\t\t" << std_size(f) << "\t\t\t" << ft_size(s) << "\t\t";
+	f.close();
+	s.close();
+	command = ((const_cast<char*>("diff ")) + ffirst + name + (const_cast<char*>(" ")) + sfirst + name);
+	std::cout << ((system(&command[0]) == 0) ? "\033[32m[OK] \033[m" : "\033[31m[KO] \033[m") << std::endl;
+
+	name = "clear.log";
+	f.open(ffirst + name);
+	s.open(sfirst + name);
+	std::cout << "Clear\t\t\t" << std_clear(f) << "\t\t\t" << ft_clear(s) << "\t\t";
+	f.close();
+	s.close();
+	command = ((const_cast<char*>("diff ")) + ffirst + name + (const_cast<char*>(" ")) + sfirst + name);
+	std::cout << ((system(&command[0]) == 0) ? "\033[32m[OK] \033[m" : "\033[31m[KO] \033[m") << std::endl;
+
+	std::cout << "\033[33m********************************************************************\033[m\n";
+}
+}
+
+int main()
+{
+	std::ofstream ft_file;
+	std::ofstream std_file;
+	system("rm -rf ./logs");
+	// mkdir("./logs", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+	// mkdir("./logs/vector", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+	// mkdir("./logs/map", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+	// mkdir("./logs/set", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+	// mkdir("./logs/stack", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+	// vec::test_vector(ft_file, std_file);
+	// std::cout << std::endl;
+	// map::test_map(ft_file, std_file);
+	// if (system("diff ./logs/fft_at.log ./logs/std_at.log") == 0)
+	// 	std::cout << "\033[32m[OK] \033[m";
+	// else
+	// 	std::cout << "\033[31m[KO] \033[m";
+	// if(system("diff a b") == 0)
+	// std::cout << std::flush;
 }

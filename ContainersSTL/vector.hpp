@@ -462,7 +462,7 @@ public:
 
 	iterator erase(iterator first, iterator last) {
 		size_type count = last - first;
-		for (size_t i = first - this->begin(); i < last - this->begin(); ++i) {
+		for (int i = first - this->begin(); i < last - this->begin(); ++i) {
 			_allocator.destroy(_array + i);
 		}
 		for (size_t i = last - this->begin(); i < this->size(); ++ i) {
