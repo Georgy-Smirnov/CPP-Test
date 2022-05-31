@@ -203,6 +203,7 @@ public:
 				_allocator.construct(new_node, _nil, val);
 				new_node->_parent = _nil->_left;
 				new_node->_parent->_left = new_node;
+				_nil->_left = new_node;
 				balanced_after_added(new_node);
 				++_size;
 				return new_node;
@@ -212,6 +213,7 @@ public:
 				_allocator.construct(new_node, _nil, val);
 				new_node->_parent = _nil->_right;
 				new_node->_parent->_right = new_node;
+				_nil->_right = new_node;
 				balanced_after_added(new_node);
 				++_size;
 				return new_node;
