@@ -3711,8 +3711,8 @@ namespace st
 	}
 
 	void test_stack(std::ofstream &f, std::ofstream &s) {
-		std::string ffirst = "./logs/set/ft_";
-		std::string sfirst = "./logs/set/std_";
+		std::string ffirst = "./logs/stack/ft_";
+		std::string sfirst = "./logs/stack/std_";
 		std::string name;
 		std::string command;
 		std::cout << "\033[33m********************************************************************\n"
